@@ -120,6 +120,7 @@ class MemberEntity(SensorEntity):
         self._attr_unique_id = self.member.entity_id
         self._attr_native_value = self.member.email
         self._attr_name = f"{DOMAIN.capitalize()} ({self.member.email})"
+        self._attr_icon = "mdi:account"
 
     @property
     def extra_state_attributes(self) -> dict[str, Any]:

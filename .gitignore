@@ -1,2 +1,5 @@
-venv/
-.venv/
+/*
+!/custom_components/
+/custom_components/*
+!/custom_components/petlibro/
+**/__pycache__/

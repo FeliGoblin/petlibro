@@ -65,26 +65,26 @@
     "selector": {
         "member_gender": {
             "options": {
-                "MALE": "Male",
-                "FEMALE": "Female",
-                "NONE": "Prefer not to say"
+                "male": "Male",
+                "female": "Female",
+                "none": "Prefer not to say"
             }
         },
         "pet_sex": {
             "options": {
-                "MALE": "Male",
-                "FEMALE": "Female",
-                "NONE": "None selected"
+                "male": "Male",
+                "female": "Female",
+                "none": "None selected"
             }
         },
         "unit_type": {
             "options": {
-                "CUPS": "cup (US legal cup)",
-                "OUNCES": "oz (ounce)",
-                "GRAMS": "g (gram)",
-                "MILLILITERS": "ml (milliliter)",
-                "KILOGRAMS": "kg (kilogram)",
-                "POUNDS": "lb (pound)"
+                "cups": "cup (US legal cup)",
+                "ounces": "oz (ounce)",
+                "grams": "g (gram)",
+                "milliliters": "ml (milliliter)",
+                "kilograms": "kg (kilogram)",
+                "pounds": "lb (pound)"
             }
         }
     },

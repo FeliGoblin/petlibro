@@ -257,7 +257,7 @@ class PetlibroOptionsFlow(OptionsFlow):
                     ): selector(
                         {
                             "select": {
-                                "options": [g.name for g in Gender],
+                                "options": [g.name.lower() for g in Gender],
                                 "mode": "dropdown",
                                 "translation_key": "member_gender",
                             }
@@ -306,7 +306,7 @@ class PetlibroOptionsFlow(OptionsFlow):
         return selector(
             {
                 "select": {
-                    "options": [o.name for o in options],
+                    "options": [o.name.lower() for o in options],
                     "mode": "dropdown",
                     "translation_key": "unit_type",
                 }

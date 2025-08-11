@@ -28,7 +28,7 @@ class Member(Event):
     def __init__(self, data: dict, api: PetLibroAPI) -> None:
         """Initialise the Member object."""
         super().__init__()
-        self._data: dict[str, Any] = {}
+        self._data: dict[str, str | Any] = {}
         self.force_refresh: bool = False
         self.api = api
         self.update_data(data)
@@ -71,25 +71,25 @@ class Member(Event):
     def gender(self) -> str:
         """Gender on account as a string."""
         try:
-            return Gender(self._data.get(API.GENDER, 0)).name
+            return Gender(self._data.get(API.GENDER, 0)).name.lower()
         except ValueError:
             _LOGGER.error("Unknown gender value: %s", self._data.get("gender"))
-            return str(Gender.NONE)
+            return str(Gender.NONE).lower()
 
     @property
     def weightUnitType(self) -> str:
         """Weight unit type on account as a string."""
-        return self._get_unit_type(API.WEIGHT_UNIT, DEFAULT_WEIGHT)
+        return self._get_unit_type(API.WEIGHT_UNIT, DEFAULT_WEIGHT).lower()
 
     @property
     def feedUnitType(self) -> str:
         """Feed unit type on account as a string."""
-        return self._get_unit_type(API.FEED_UNIT, DEFAULT_FEED)
+        return self._get_unit_type(API.FEED_UNIT, DEFAULT_FEED).lower()
 
     @property
     def waterUnitType(self) -> str:
         """Water unit type on account as a string."""
-        return self._get_unit_type(API.WATER_UNIT, DEFAULT_WATER)
+        return self._get_unit_type(API.WATER_UNIT, DEFAULT_WATER).lower()
 
     def _get_unit_type(self, key: str, default: UnitTypes) -> str:
         """Return a valid UnitTypes name for the given key."""

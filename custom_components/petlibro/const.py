@@ -58,15 +58,18 @@ DEFAULT_WATER = UnitTypes.OUNCES
 class Gender(IntEnum):
     """Gender/sex options."""
 
-    NONE = 0, ""
-    MALE = 1, "♂"
-    FEMALE = 2, "♀"
+    # API value, MDI Icon, Symbol, Emoji
+    NONE = 0, "mdi:gender-male-female", "\u26a5", ""
+    MALE = 1, "mdi:gender-male", "\u2642", "\u2642\ufe0f"
+    FEMALE = 2, "mdi:gender-female", "\u2640", "\u2640\ufe0f"
 
-    def __new__(cls, value: int, symbol: str = ""):
+    def __new__(cls, value: int, icon: str, symbol: str, emoji: str):
         "Ensures IntEnum functionality while allowing symbols."
         obj = int.__new__(cls, value)
         obj._value_ = value
+        obj._icon = icon  # noqa: SLF001
         obj._symbol = symbol  # noqa: SLF001
+        obj._emoji = emoji  # noqa: SLF001
         return obj
 
     def __str__(self) -> str:
@@ -78,9 +81,19 @@ class Gender(IntEnum):
         return int(self)
 
     @property
+    def icon(self) -> str:
+        """MDI icon for gender (eg. mdi:gender-male)."""
+        return self._icon
+
+    @property
     def symbol(self) -> str:
-        """Symbol for gender (eg. ♂, ♀)."""
+        """Symbol for gender (eg. \u26a5, \u2642, \u2640)."""
         return self._symbol
+
+    @property
+    def emoji(self) -> str:
+        """Emoji for gender (eg. \u2642\ufe0f, \u2640\ufe0f)."""
+        return self._emoji
 
 
 class CommonAPIKeys(StrEnum):

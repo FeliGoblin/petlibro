@@ -133,28 +133,34 @@ DEVICE_NUMBER_MAP: dict[type[Device], list[PetLibroNumberEntityDescription]] = {
             translation_key="manual_feed_quantity",
             name="Manual Feed Quantity",
             icon="mdi:scale",
-            native_unit_of_measurement_fn=lambda member: member.feedUnitType.symbol,
-            native_max_value_fn=lambda m: Unit.round(m.feedUnitType.factor * 12, m.feedUnitType),
-            native_min_value_fn=lambda member: round(member.feedUnitType.factor, 16),
-            native_step_fn=lambda member: member.feedUnitType.factor,
-            method=lambda d, m, v: d.set_manual_feed_quantity(Unit.convert_feed(v, m.feedUnitType, None)),
-            value_fn=lambda d, m: Unit.convert_feed(d.manual_feed_quantity, None, m.feedUnitType, True),
-            extra_state_attributes_fn=lambda d, m: {"grain": d.manual_feed_quantity}|{
+            native_unit_of_measurement_fn=lambda m: m.feedUnitType.symbol 
+                if m.feedUnitType != Unit.CUPS else "/12 cup",
+            native_max_value_fn=lambda m: Unit.round(m.feedUnitType.factor * 12, m.feedUnitType)
+                if m.feedUnitType != Unit.CUPS else 12,
+            native_min_value_fn=lambda m: round(m.feedUnitType.factor, 16)
+                if m.feedUnitType != Unit.CUPS else 1,
+            native_step_fn=lambda m: m.feedUnitType.factor 
+                if m.feedUnitType != Unit.CUPS else 1,
+            method=lambda d, m, v: d.set_manual_feed_quantity(Unit.convert_feed(
+                v, m.feedUnitType if m.feedUnitType != Unit.CUPS else None, None)),
+            value_fn=lambda d, m: Unit.convert_feed(d.manual_feed_quantity, None, m.feedUnitType, True) 
+                if m.feedUnitType != Unit.CUPS else d.manual_feed_quantity,
+            extra_state_attributes_fn=lambda d, m: {"portion": d.manual_feed_quantity}|{
                 unit.symbol: Unit.convert_feed(d.manual_feed_quantity, None, unit, True)
                 for unit in VALID_UNIT_TYPES[API.FEED_UNIT] if unit
             },
         ),
         PetLibroNumberEntityDescription[AirSmartFeeder](
-            key="manual_feed_quantity_grain",
-            translation_key="manual_feed_quantity_grain",
-            name="Manual Feed Quantity (Grain)",
+            key="manual_feed_quantity_portion",
+            translation_key="manual_feed_quantity_portion",
+            name="Manual Feed Quantity (Portion)",
             icon="mdi:scale",
             device_class=NumberDeviceClass.POWER_FACTOR,
             native_max_value=12,
             native_min_value=1,
             method=lambda device, m, value: device.set_manual_feed_quantity(value),
             value_fn=lambda device, m: device.manual_feed_quantity,
-            extra_state_attributes_fn=lambda d, m: {"grain": d.manual_feed_quantity}|{
+            extra_state_attributes_fn=lambda d, m: {"portion": d.manual_feed_quantity}|{
                 unit.symbol: Unit.convert_feed(d.manual_feed_quantity, None, unit, True)
                 for unit in VALID_UNIT_TYPES[API.FEED_UNIT] if unit
             },
@@ -166,28 +172,34 @@ DEVICE_NUMBER_MAP: dict[type[Device], list[PetLibroNumberEntityDescription]] = {
             translation_key="manual_feed_quantity",
             name="Manual Feed Quantity",
             icon="mdi:scale",
-            native_unit_of_measurement_fn=lambda member: member.feedUnitType.symbol,
-            native_max_value_fn=lambda m: Unit.round(m.feedUnitType.factor * 12, m.feedUnitType),
-            native_min_value_fn=lambda member: round(member.feedUnitType.factor, 16),
-            native_step_fn=lambda member: member.feedUnitType.factor,
-            method=lambda d, m, v: d.set_manual_feed_quantity(Unit.convert_feed(v, m.feedUnitType, None)),
-            value_fn=lambda d, m: Unit.convert_feed(d.manual_feed_quantity, None, m.feedUnitType, True),
-            extra_state_attributes_fn=lambda d, m: {"grain": d.manual_feed_quantity}|{
+            native_unit_of_measurement_fn=lambda m: m.feedUnitType.symbol 
+                if m.feedUnitType != Unit.CUPS else "/12 cup",
+            native_max_value_fn=lambda m: Unit.round(m.feedUnitType.factor * 12, m.feedUnitType)
+                if m.feedUnitType != Unit.CUPS else 12,
+            native_min_value_fn=lambda m: round(m.feedUnitType.factor, 16)
+                if m.feedUnitType != Unit.CUPS else 1,
+            native_step_fn=lambda m: m.feedUnitType.factor 
+                if m.feedUnitType != Unit.CUPS else 1,
+            method=lambda d, m, v: d.set_manual_feed_quantity(Unit.convert_feed(
+                v, m.feedUnitType if m.feedUnitType != Unit.CUPS else None, None)),
+            value_fn=lambda d, m: Unit.convert_feed(d.manual_feed_quantity, None, m.feedUnitType, True) 
+                if m.feedUnitType != Unit.CUPS else d.manual_feed_quantity,
+            extra_state_attributes_fn=lambda d, m: {"portion": d.manual_feed_quantity}|{
                 unit.symbol: Unit.convert_feed(d.manual_feed_quantity, None, unit, True)
                 for unit in VALID_UNIT_TYPES[API.FEED_UNIT] if unit
             },
         ),
         PetLibroNumberEntityDescription[GranarySmartFeeder](
-            key="manual_feed_quantity_grain",
-            translation_key="manual_feed_quantity_grain",
-            name="Manual Feed Quantity (Grain)",
+            key="manual_feed_quantity_portion",
+            translation_key="manual_feed_quantity_portion",
+            name="Manual Feed Quantity (Portion)",
             icon="mdi:scale",
             device_class=NumberDeviceClass.POWER_FACTOR,
             native_max_value=12,
             native_min_value=1,
             method=lambda device, m, value: device.set_manual_feed_quantity(value),
             value_fn=lambda device, m: device.manual_feed_quantity,
-            extra_state_attributes_fn=lambda d, m: {"grain": d.manual_feed_quantity}|{
+            extra_state_attributes_fn=lambda d, m: {"portion": d.manual_feed_quantity}|{
                 unit.symbol: Unit.convert_feed(d.manual_feed_quantity, None, unit, True)
                 for unit in VALID_UNIT_TYPES[API.FEED_UNIT] if unit
             },
@@ -212,28 +224,34 @@ DEVICE_NUMBER_MAP: dict[type[Device], list[PetLibroNumberEntityDescription]] = {
             translation_key="manual_feed_quantity",
             name="Manual Feed Quantity",
             icon="mdi:scale",
-            native_unit_of_measurement_fn=lambda member: member.feedUnitType.symbol,
-            native_max_value_fn=lambda m: Unit.round(m.feedUnitType.factor * 12, m.feedUnitType),
-            native_min_value_fn=lambda member: round(member.feedUnitType.factor, 16),
-            native_step_fn=lambda member: member.feedUnitType.factor,
-            method=lambda d, m, v: d.set_manual_feed_quantity(Unit.convert_feed(v, m.feedUnitType, None)),
-            value_fn=lambda d, m: Unit.convert_feed(d.manual_feed_quantity, None, m.feedUnitType, True),
-            extra_state_attributes_fn=lambda d, m: {"grain": d.manual_feed_quantity}|{
+            native_unit_of_measurement_fn=lambda m: m.feedUnitType.symbol 
+                if m.feedUnitType != Unit.CUPS else "/12 cup",
+            native_max_value_fn=lambda m: Unit.round(m.feedUnitType.factor * 12, m.feedUnitType)
+                if m.feedUnitType != Unit.CUPS else 12,
+            native_min_value_fn=lambda m: round(m.feedUnitType.factor, 16)
+                if m.feedUnitType != Unit.CUPS else 1,
+            native_step_fn=lambda m: m.feedUnitType.factor 
+                if m.feedUnitType != Unit.CUPS else 1,
+            method=lambda d, m, v: d.set_manual_feed_quantity(Unit.convert_feed(
+                v, m.feedUnitType if m.feedUnitType != Unit.CUPS else None, None)),
+            value_fn=lambda d, m: Unit.convert_feed(d.manual_feed_quantity, None, m.feedUnitType, True) 
+                if m.feedUnitType != Unit.CUPS else d.manual_feed_quantity,
+            extra_state_attributes_fn=lambda d, m: {"portion": d.manual_feed_quantity}|{
                 unit.symbol: Unit.convert_feed(d.manual_feed_quantity, None, unit, True)
                 for unit in VALID_UNIT_TYPES[API.FEED_UNIT] if unit
             },
         ),
         PetLibroNumberEntityDescription[GranarySmartCameraFeeder](
-            key="manual_feed_quantity_grain",
-            translation_key="manual_feed_quantity_grain",
-            name="Manual Feed Quantity (Grain)",
+            key="manual_feed_quantity_portion",
+            translation_key="manual_feed_quantity_portion",
+            name="Manual Feed Quantity (Portion)",
             icon="mdi:scale",
             device_class=NumberDeviceClass.POWER_FACTOR,
             native_max_value=12,
             native_min_value=1,
             method=lambda device, m, value: device.set_manual_feed_quantity(value),
             value_fn=lambda device, m: device.manual_feed_quantity,
-            extra_state_attributes_fn=lambda d, m: {"grain": d.manual_feed_quantity}|{
+            extra_state_attributes_fn=lambda d, m: {"portion": d.manual_feed_quantity}|{
                 unit.symbol: Unit.convert_feed(d.manual_feed_quantity, None, unit, True)
                 for unit in VALID_UNIT_TYPES[API.FEED_UNIT] if unit
             },
@@ -282,28 +300,34 @@ DEVICE_NUMBER_MAP: dict[type[Device], list[PetLibroNumberEntityDescription]] = {
             translation_key="manual_feed_quantity",
             name="Manual Feed Quantity",
             icon="mdi:scale",
-            native_unit_of_measurement_fn=lambda member: member.feedUnitType.symbol,
-            native_max_value_fn=lambda m: Unit.round(m.feedUnitType.factor * 12, m.feedUnitType),
-            native_min_value_fn=lambda member: round(member.feedUnitType.factor, 16),
-            native_step_fn=lambda member: member.feedUnitType.factor,
-            method=lambda d, m, v: d.set_manual_feed_quantity(Unit.convert_feed(v, m.feedUnitType, None)),
-            value_fn=lambda d, m: Unit.convert_feed(d.manual_feed_quantity, None, m.feedUnitType, True),
-            extra_state_attributes_fn=lambda d, m: {"grain": d.manual_feed_quantity}|{
+            native_unit_of_measurement_fn=lambda m: m.feedUnitType.symbol 
+                if m.feedUnitType != Unit.CUPS else "/12 cup",
+            native_max_value_fn=lambda m: Unit.round(m.feedUnitType.factor * 12, m.feedUnitType)
+                if m.feedUnitType != Unit.CUPS else 12,
+            native_min_value_fn=lambda m: round(m.feedUnitType.factor, 16)
+                if m.feedUnitType != Unit.CUPS else 1,
+            native_step_fn=lambda m: m.feedUnitType.factor 
+                if m.feedUnitType != Unit.CUPS else 1,
+            method=lambda d, m, v: d.set_manual_feed_quantity(Unit.convert_feed(
+                v, m.feedUnitType if m.feedUnitType != Unit.CUPS else None, None)),
+            value_fn=lambda d, m: Unit.convert_feed(d.manual_feed_quantity, None, m.feedUnitType, True) 
+                if m.feedUnitType != Unit.CUPS else d.manual_feed_quantity,
+            extra_state_attributes_fn=lambda d, m: {"portion": d.manual_feed_quantity}|{
                 unit.symbol: Unit.convert_feed(d.manual_feed_quantity, None, unit, True)
                 for unit in VALID_UNIT_TYPES[API.FEED_UNIT] if unit
             },
         ),
         PetLibroNumberEntityDescription[OneRFIDSmartFeeder](
-            key="manual_feed_quantity_grain",
-            translation_key="manual_feed_quantity_grain",
-            name="Manual Feed Quantity (Grain)",
+            key="manual_feed_quantity_portion",
+            translation_key="manual_feed_quantity_portion",
+            name="Manual Feed Quantity (Portion)",
             icon="mdi:scale",
             device_class=NumberDeviceClass.POWER_FACTOR,
             native_max_value=12,
             native_min_value=1,
             method=lambda device, m, value: device.set_manual_feed_quantity(value),
             value_fn=lambda device, m: device.manual_feed_quantity,
-            extra_state_attributes_fn=lambda d, m: {"grain": d.manual_feed_quantity}|{
+            extra_state_attributes_fn=lambda d, m: {"portion": d.manual_feed_quantity}|{
                 unit.symbol: Unit.convert_feed(d.manual_feed_quantity, None, unit, True)
                 for unit in VALID_UNIT_TYPES[API.FEED_UNIT] if unit
             },
@@ -316,28 +340,34 @@ DEVICE_NUMBER_MAP: dict[type[Device], list[PetLibroNumberEntityDescription]] = {
             translation_key="manual_feed_quantity",
             name="Manual Feed Quantity",
             icon="mdi:scale",
-            native_unit_of_measurement_fn=lambda member: member.feedUnitType.symbol,
-            native_max_value_fn=lambda m: Unit.round(m.feedUnitType.factor * 12, m.feedUnitType),
-            native_min_value_fn=lambda member: round(member.feedUnitType.factor, 16),
-            native_step_fn=lambda member: member.feedUnitType.factor,
-            method=lambda d, m, v: d.set_manual_feed_quantity(Unit.convert_feed(v, m.feedUnitType, None)),
-            value_fn=lambda d, m: Unit.convert_feed(d.manual_feed_quantity, None, m.feedUnitType, True),
-            extra_state_attributes_fn=lambda d, m: {"grain": d.manual_feed_quantity}|{
+            native_unit_of_measurement_fn=lambda m: m.feedUnitType.symbol 
+                if m.feedUnitType != Unit.CUPS else "/12 cup",
+            native_max_value_fn=lambda m: Unit.round(m.feedUnitType.factor * 12, m.feedUnitType)
+                if m.feedUnitType != Unit.CUPS else 12,
+            native_min_value_fn=lambda m: round(m.feedUnitType.factor, 16)
+                if m.feedUnitType != Unit.CUPS else 1,
+            native_step_fn=lambda m: m.feedUnitType.factor 
+                if m.feedUnitType != Unit.CUPS else 1,
+            method=lambda d, m, v: d.set_manual_feed_quantity(Unit.convert_feed(
+                v, m.feedUnitType if m.feedUnitType != Unit.CUPS else None, None)),
+            value_fn=lambda d, m: Unit.convert_feed(d.manual_feed_quantity, None, m.feedUnitType, True) 
+                if m.feedUnitType != Unit.CUPS else d.manual_feed_quantity,
+            extra_state_attributes_fn=lambda d, m: {"portion": d.manual_feed_quantity}|{
                 unit.symbol: Unit.convert_feed(d.manual_feed_quantity, None, unit, True)
                 for unit in VALID_UNIT_TYPES[API.FEED_UNIT] if unit
             },
         ),
         PetLibroNumberEntityDescription[SpaceSmartFeeder](
-            key="manual_feed_quantity_grain",
-            translation_key="manual_feed_quantity_grain",
-            name="Manual Feed Quantity (Grain)",
+            key="manual_feed_quantity_portion",
+            translation_key="manual_feed_quantity_portion",
+            name="Manual Feed Quantity (Portion)",
             icon="mdi:scale",
             device_class=NumberDeviceClass.POWER_FACTOR,
             native_max_value=12,
             native_min_value=1,
             method=lambda device, m, value: device.set_manual_feed_quantity(value),
             value_fn=lambda device, m: device.manual_feed_quantity,
-            extra_state_attributes_fn=lambda d, m: {"grain": d.manual_feed_quantity}|{
+            extra_state_attributes_fn=lambda d, m: {"portion": d.manual_feed_quantity}|{
                 unit.symbol: Unit.convert_feed(d.manual_feed_quantity, None, unit, True)
                 for unit in VALID_UNIT_TYPES[API.FEED_UNIT] if unit
             },

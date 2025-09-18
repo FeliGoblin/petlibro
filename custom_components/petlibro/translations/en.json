@@ -344,8 +344,8 @@
             "manual_feed_quantity": {
                 "name": "Manual Feed Quantity"
             },
-            "manual_feed_quantity_grain": {
-                "name": "Manual Feed Quantity (Grain)"
+            "manual_feed_quantity_portion": {
+                "name": "Manual Feed Quantity (Portion)"
             }
         },
         "select": {

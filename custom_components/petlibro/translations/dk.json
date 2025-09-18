@@ -230,8 +230,8 @@
             "manual_feed_quantity": {
                 "name": "Manuel fodermængde"
             },
-            "manual_feed_quantity_grain": {
-                "name": "Manuel fodermængde (Korn)"
+            "manual_feed_quantity_portion": {
+                "name": "Manuel fodermængde (Portion)"
             }
         },
         "select": {

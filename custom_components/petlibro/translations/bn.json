@@ -227,8 +227,8 @@
             "manual_feed_quantity": {
                 "name": "ম্যানুয়াল খাবারের পরিমাণ"
             },
-            "manual_feed_quantity_grain": {
-                "name": "ম্যানুয়াল খাবারের পরিমাণ (দানা)"
+            "manual_feed_quantity_portion": {
+                "name": "ম্যানুয়াল খাবারের পরিমাণ (পরিমাণ)"
             }
         },
         "select": {

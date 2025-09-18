@@ -227,8 +227,8 @@
             "manual_feed_quantity": {
                 "name": "Ручное количество корма"
             },
-            "manual_feed_quantity_grain": {
-                "name": "Ручное количество корма (Зерно)"
+            "manual_feed_quantity_portion": {
+                "name": "Ручное количество корма (порция)"
             }
         },
         "select": {

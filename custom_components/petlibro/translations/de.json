@@ -221,8 +221,8 @@
             "manual_feed_quantity": {
                 "name": "Manuelle Futtermenge"
             },
-            "manual_feed_quantity_grain": {
-                "name": "Manuelle Futtermenge (Korn)"
+            "manual_feed_quantity_portion": {
+                "name": "Manuelle Futtermenge (Portion)"
             }
         },
         "select": {

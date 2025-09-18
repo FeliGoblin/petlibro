@@ -227,8 +227,8 @@
             "manual_feed_quantity": {
                 "name": "मैनुअल खिलाने की मात्रा"
             },
-            "manual_feed_quantity_grain": {
-                "name": "मैनुअल खिलाने की मात्रा (दाना)"
+            "manual_feed_quantity_portion": {
+                "name": "मैनुअल खिलाने की मात्रा (भाग)"
             }
         },
         "select": {

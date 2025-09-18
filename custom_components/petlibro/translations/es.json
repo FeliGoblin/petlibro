@@ -227,8 +227,8 @@
             "manual_feed_quantity": {
                 "name": "Cantidad de alimento manual"
             },
-            "manual_feed_quantity_grain": {
-                "name": "Cantidad de alimento manual (Grano)"
+            "manual_feed_quantity_portion": {
+                "name": "Cantidad de alimento manual (Porción)"
             }
         },
         "select": {

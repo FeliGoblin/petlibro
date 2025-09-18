@@ -129,7 +129,7 @@ class Unit(IntEnum):
     def convert_feed(
         self, value: float, from_unit: _Unit | None, to_unit: _Unit | None, rounded: bool = False
     ):
-        """Convert PetLibro feed units. Use **None** for API 'grain' unit (1/12th of a cup)."""
+        """Convert PetLibro feed units. Use **None** for portion unit (1/12th of a cup)."""
         if value and from_unit != to_unit:
             if not {from_unit, to_unit}.issubset(VALID_UNIT_TYPES[APIKey.FEED_UNIT]):
                 raise ValueError(f"Incompatible conversion: {from_unit} -> {to_unit}")

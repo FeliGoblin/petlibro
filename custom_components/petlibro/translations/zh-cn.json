@@ -227,8 +227,8 @@
             "manual_feed_quantity": {
                 "name": "手动喂食量"
             },
-            "manual_feed_quantity_grain": {
-                "name": "手动喂食量（颗）"
+            "manual_feed_quantity_portion": {
+                "name": "手动喂食量（份）"
             }
         },
         "select": {

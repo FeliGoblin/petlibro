@@ -230,8 +230,8 @@
             "manual_feed_quantity": {
                 "name": "Handmatige voederhoeveelheid"
             },
-            "manual_feed_quantity_grain": {
-                "name": "Handmatige voederhoeveelheid (Korrel)"
+            "manual_feed_quantity_portion": {
+                "name": "Handmatige voederhoeveelheid (Portie)"
             }
         },
         "select": {

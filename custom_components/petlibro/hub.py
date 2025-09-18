@@ -92,7 +92,7 @@ class PetLibroHub:
                 # Create a new device and add it without calling refresh immediately
                 if device_name in product_name_map:
                     _LOGGER.debug(f"Loading new device: {device_name} (Serial: {device_sn})")
-                    device = product_name_map[device_name](device_data, self.api)
+                    device = product_name_map[device_name](device_data, self.member, self.api)
                     self.devices.append(device)  # Add to device list
                     _LOGGER.debug(f"Successfully loaded device: {device_name} (Serial: {device_sn})")
                 else:

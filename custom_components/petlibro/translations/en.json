@@ -111,8 +111,11 @@
             "electric_quantity": {
                 "name": "Battery / AC %"
             },
-            "today_feeding_quantity": {
-                "name": "Today's Feeding Quantity"
+            "today_feeding_quantity_weight": {
+                "name": "Today's Feeding Quantity (Weight)"
+            },
+            "today_feeding_quantity_volume": {
+                "name": "Today's Feeding Quantity (Volume)"
             },
             "today_feeding_times": {
                 "name": "Today's Feeding Times"
@@ -126,8 +129,11 @@
             "last_feed_time": {
                 "name": "Last Feed Time"
             },
-            "last_feed_quantity": {
-                "name": "Last Feed Quantity"
+            "last_feed_quantity_weight": {
+                "name": "Last Feed Quantity (Weight)"
+            },
+            "last_feed_quantity_volume": {
+                "name": "Last Feed Quantity (Volume)"
             },
             "feeding_plan_state": {
                 "name": "Today's Feeding Plan"
@@ -334,6 +340,12 @@
             },
             "filter_cycle": {
                 "name": "Filter Cycle"
+            },
+            "manual_feed_quantity": {
+                "name": "Manual Feed Quantity"
+            },
+            "manual_feed_quantity_grain": {
+                "name": "Manual Feed Quantity (Grain)"
             }
         },
         "select": {

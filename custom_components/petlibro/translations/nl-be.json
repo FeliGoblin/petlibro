@@ -48,8 +48,17 @@
             "electric_quantity": {
                 "name": "Batterij %"
             },
-            "today_feeding_quantity": {
-                "name": "Totale Voedingshoeveelheid van vandaag"
+            "today_feeding_quantity_weight": {
+                "name": "Vandaag gevoerde hoeveelheid (Gewicht)"
+            },
+            "today_feeding_quantity_volume": {
+                "name": "Vandaag gevoerde hoeveelheid (Volume)"
+            },
+            "last_feed_quantity_weight": {
+                "name": "Laatste gevoerde hoeveelheid (Gewicht)"
+            },
+            "last_feed_quantity_volume": {
+                "name": "Laatste gevoerde hoeveelheid (Volume)"
             },
             "today_feeding_times": {
                 "name": "Totale voedermomenten van vandaag"
@@ -217,6 +226,12 @@
             },
             "lid_close_time": {
                 "name": "Sluittijd deksel"
+            },
+            "manual_feed_quantity": {
+                "name": "Handmatige voederhoeveelheid"
+            },
+            "manual_feed_quantity_grain": {
+                "name": "Handmatige voederhoeveelheid (Korrel)"
             }
         },
         "select": {

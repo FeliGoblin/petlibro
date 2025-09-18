@@ -27,6 +27,7 @@ class AirSmartFeeder(Device):  # Inherit directly from Device
             get_upgrade = await self.api.get_device_upgrade(self.serial)
             attribute_settings = await self.api.device_attribute_settings(self.serial)
             get_feeding_plan_today = await self.api.device_feeding_plan_today_new(self.serial)
+            get_work_record = await self.api.get_device_work_record(self.serial)
     
             # Update internal data with fetched API data
             self.update_data({
@@ -34,7 +35,8 @@ class AirSmartFeeder(Device):  # Inherit directly from Device
                 "realInfo": real_info or {},
                 "getUpgrade": get_upgrade or {},
                 "getAttributeSetting": attribute_settings or {},
-                "getfeedingplantoday": get_feeding_plan_today or {}
+                "getfeedingplantoday": get_feeding_plan_today or {},
+                "workRecord": get_work_record or [],
             })
         except PetLibroAPIError as err:
             _LOGGER.error(f"Error refreshing data for AirSmartFeeder: {err}")
@@ -208,6 +210,18 @@ class AirSmartFeeder(Device):  # Inherit directly from Device
         return None
 
     @property
+    def last_feed_quantity(self) -> int | None:
+        """Return the last feed amount."""
+        raw = self._data.get("workRecord", [])
+        if raw and isinstance(raw, list):
+            for day_entry in raw:
+                for record in day_entry.get("workRecords", []):
+                    _LOGGER.debug("Evaluating record type: %s", record.get("type"))
+                    if record.get("type") == "GRAIN_OUTPUT_SUCCESS":
+                        return record.get("actualGrainNum") or 0
+        return 0
+
+    @property
     def feeding_plan_today_data(self) -> str:
         return self._data.get("getfeedingplantoday", {})
 
@@ -288,7 +302,6 @@ class AirSmartFeeder(Device):  # Inherit directly from Device
         """Set the manual feed quantity with a default value handling"""
         _LOGGER.debug(f"Setting manual feed quantity: serial={self.serial}, value={value}")
         self.manual_feed_quantity = max(1, min(value, 24))  # Ensure value is within valid range
-        await self.refresh()
 
     # Method for manual feeding
     async def set_manual_feed(self) -> None:

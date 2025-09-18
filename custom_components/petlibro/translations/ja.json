@@ -48,8 +48,17 @@
             "electric_quantity": {
                 "name": "バッテリー / AC％"
             },
-            "today_feeding_quantity": {
-                "name": "今日の給餌量"
+            "today_feeding_quantity_weight": {
+                "name": "今日の給餌量（重量）"
+            },
+            "today_feeding_quantity_volume": {
+                "name": "今日の給餌量（容量）"
+            },
+            "last_feed_quantity_weight": {
+                "name": "最後の給餌量（重量）"
+            },
+            "last_feed_quantity_volume": {
+                "name": "最後の給餌量（容量）"
             },
             "today_feeding_times": {
                 "name": "今日の給餌時間"
@@ -214,6 +223,12 @@
             },
             "lid_close_time": {
                 "name": "ふたの近い時間"
+            },
+            "manual_feed_quantity": {
+                "name": "手動給餌量"
+            },
+            "manual_feed_quantity_grain": {
+                "name": "手動給餌量（粒）"
             }
         },
         "select": {

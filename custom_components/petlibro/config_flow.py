@@ -22,9 +22,9 @@ from .const import (
     DEFAULT_WATER,
     DEFAULT_WEIGHT,
     DOMAIN,
-    CommonAPIKeys as API,
+    APIKey as API,
     Gender,
-    UnitTypes,
+    Unit,
 )
 from .exceptions import PetLibroCannotConnect, PetLibroInvalidAuth
 from .hub import PetLibroHub
@@ -201,16 +201,20 @@ class PetlibroOptionsFlow(OptionsFlow):
             return self.async_abort(reason="account_update_nomember")
 
         user_input = user_input or {}
-        if user_input:
+        if user_input:            
+            update_setting_temp = user_input.pop("measurement_unit", {})
+            update_info_temp = user_input.copy()
+            user_input.update(**update_setting_temp)
+            
             update_setting = self.collect_updates(
                 fields=(API.FEED_UNIT, API.WATER_UNIT, API.WEIGHT_UNIT),
-                user_input=user_input.pop("measurement_unit", {}),
-                enum_cls=UnitTypes,
+                user_input=update_setting_temp,
+                enum_cls=Unit,
             )
 
             update_info = self.collect_updates(
                 fields=(API.NICKNAME, API.GENDER),
-                user_input=user_input,
+                user_input=update_info_temp,
                 special={
                     API.NICKNAME: lambda v: v or "",
                     API.GENDER: lambda v: self.validate_enum(API.GENDER, v, Gender),
@@ -252,12 +256,12 @@ class PetlibroOptionsFlow(OptionsFlow):
                     vol.Required(
                         str(API.GENDER),
                         default=user_input.get(
-                            API.GENDER, getattr(self.member, API.GENDER, str(Gender.NONE))
+                            API.GENDER, getattr(self.member, API.GENDER, Gender.NONE).lower
                         ),
                     ): selector(
                         {
                             "select": {
-                                "options": [g.name.lower() for g in Gender],
+                                "options": [g.lower for g in Gender],
                                 "mode": "dropdown",
                                 "translation_key": "member_gender",
                             }
@@ -280,33 +284,31 @@ class PetlibroOptionsFlow(OptionsFlow):
                 vol.Required(
                     str(API.FEED_UNIT),
                     default=user_input.get(
-                        API.FEED_UNIT, getattr(self.member, API.FEED_UNIT, DEFAULT_FEED.name)
+                        API.FEED_UNIT, getattr(self.member, API.FEED_UNIT, DEFAULT_FEED).lower
                     ),
-                ): self._unit_selector(
-                    (UnitTypes.CUPS, UnitTypes.OUNCES, UnitTypes.GRAMS, UnitTypes.MILLILITERS)
-                ),
+                ): self._unit_selector((Unit.CUPS, Unit.OUNCES, Unit.GRAMS, Unit.MILLILITERS)),
                 vol.Required(
                     str(API.WATER_UNIT),
                     default=user_input.get(
-                        API.WATER_UNIT, getattr(self.member, API.WATER_UNIT, DEFAULT_WATER.name)
+                        API.WATER_UNIT, getattr(self.member, API.WATER_UNIT, DEFAULT_WATER).lower
                     ),
-                ): self._unit_selector((UnitTypes.OUNCES, UnitTypes.MILLILITERS)),
+                ): self._unit_selector((Unit.WATER_OUNCES, Unit.WATER_MILLILITERS)),
                 vol.Required(
                     str(API.WEIGHT_UNIT),
                     default=user_input.get(
                         API.WEIGHT_UNIT,
-                        getattr(self.member, API.WEIGHT_UNIT, DEFAULT_WEIGHT.name),
+                        getattr(self.member, API.WEIGHT_UNIT, DEFAULT_WEIGHT).lower,
                     ),
-                ): self._unit_selector((UnitTypes.POUNDS, UnitTypes.KILOGRAMS)),
+                ): self._unit_selector((Unit.POUNDS, Unit.KILOGRAMS)),
             }
         )
 
-    def _unit_selector(self, options: tuple[Enum, ...]) -> Any:
+    def _unit_selector(self, options: tuple[Unit, ...]) -> Any:
         """Return a dropdown selector for measurement unit options."""
         return selector(
             {
                 "select": {
-                    "options": [o.name.lower() for o in options],
+                    "options": [o.lower for o in options],
                     "mode": "dropdown",
                     "translation_key": "unit_type",
                 }
@@ -358,6 +360,7 @@ class PetlibroOptionsFlow(OptionsFlow):
             else:
                 api_value = form_value
 
-            updates[api_key] = api_value
-
+            if api_value != current_value:
+                updates[api_key] = api_value
+                
         return updates

@@ -48,8 +48,17 @@
             "electric_quantity": {
                 "name": "Батарея / AC %"
             },
-            "today_feeding_quantity": {
-                "name": "Сегодняшнее количество кормления"
+            "today_feeding_quantity_weight": {
+                "name": "Сегодняшнее количество корма (Вес)"
+            },
+            "today_feeding_quantity_volume": {
+                "name": "Сегодняшнее количество корма (Объем)"
+            },
+            "last_feed_quantity_weight": {
+                "name": "Последнее количество корма (Вес)"
+            },
+            "last_feed_quantity_volume": {
+                "name": "Последнее количество корма (Объем)"
             },
             "today_feeding_times": {
                 "name": "Сегодняшнее время кормления"
@@ -214,6 +223,12 @@
             },
             "lid_close_time": {
                 "name": "Крышка близко время"
+            },
+            "manual_feed_quantity": {
+                "name": "Ручное количество корма"
+            },
+            "manual_feed_quantity_grain": {
+                "name": "Ручное количество корма (Зерно)"
             }
         },
         "select": {

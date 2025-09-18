@@ -10,7 +10,7 @@ from functools import cached_property
 from typing import Optional
 from typing import Any
 import logging
-from .const import DOMAIN
+from .const import DOMAIN, VALID_UNIT_TYPES, Unit, APIKey as API
 from homeassistant.components.number import (
     NumberEntity,
     NumberEntityDescription,
@@ -21,6 +21,7 @@ from homeassistant.core import HomeAssistant
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
 from homeassistant.config_entries import ConfigEntry  # Added ConfigEntry import
 from .hub import PetLibroHub  # Adjust the import path as necessary
+from .member import Member
 
 
 _LOGGER = logging.getLogger(__name__)
@@ -43,9 +44,14 @@ class PetLibroNumberEntityDescription(NumberEntityDescription, PetLibroEntityDes
     """A class that describes device number entities."""
 
     device_class_fn: Callable[[_DeviceT], NumberDeviceClass | None] = lambda _: None
-    value: Callable[[_DeviceT], float] = lambda _: True
-    method: Callable[[_DeviceT], float] = lambda _: True
+    native_unit_of_measurement_fn: Callable[[Member], str | None] = lambda _: None
+    native_max_value_fn: Callable[[Member], float | None] = lambda _: None
+    native_min_value_fn: Callable[[Member], float | None] = lambda _: None
+    native_step_fn: Callable[[Member], float | None] = lambda _: None
+    value_fn: Callable[[_DeviceT, Member], float] = lambda d, m: 0
+    method: Callable[[_DeviceT, Member, float], float] = lambda d, m: None
     device_class: Optional[NumberDeviceClass] = None
+    extra_state_attributes_fn: Callable[[_DeviceT, Member], dict[str, Any] | None] = lambda d,m: None
 
 class PetLibroNumberEntity(PetLibroEntity[_DeviceT], NumberEntity):
     """PETLIBRO sensor entity."""
@@ -60,6 +66,8 @@ class PetLibroNumberEntity(PetLibroEntity[_DeviceT], NumberEntity):
     @property
     def native_value(self) -> float | None:
         """Return the current state."""
+        if (value_fn := self.entity_description.value_fn(self.device, self.member)) is not None:
+            return value_fn
         state = getattr(self.device, self.entity_description.key, None)
         if state is None:
             _LOGGER.warning(f"Value '{self.entity_description.key}' is None for device {self.device.name}")
@@ -73,38 +81,116 @@ class PetLibroNumberEntity(PetLibroEntity[_DeviceT], NumberEntity):
         try:
             # Regular case for sound_level or other methods that only need a value
             _LOGGER.debug(f"Calling method with value={value} for {self.device.name}")
-            await self.entity_description.method(self.device, value)
+            await self.entity_description.method(self.device, self.member, value)
+            self.async_write_ha_state()
             _LOGGER.debug(f"Value {value} set successfully for {self.device.name}")
         except Exception as e:
             _LOGGER.error(f"Error setting value {value} for {self.device.name}: {e}")
 
+    @property
+    def native_unit_of_measurement(self) -> str | None:
+        """Return the native unit of measurement."""
+        if (uom := self.entity_description.native_unit_of_measurement_fn(self.member)) is not None:
+            return uom
+        return super().native_unit_of_measurement
+
+    @property
+    def native_min_value(self) -> float:
+        """Return the minimum value."""
+        if (min_value := self.entity_description.native_min_value_fn(self.member)) is not None:
+            return min_value
+        return super().native_min_value
+
+    @property
+    def native_max_value(self) -> float:
+        """Return the maximum value."""
+        if (max_value := self.entity_description.native_max_value_fn(self.member)) is not None:
+            return max_value
+        return super().native_max_value
+
+    @property
+    def native_step(self) -> float | None:
+        """Return the increment/decrement step."""
+        if (native_step := self.entity_description.native_step_fn(self.member)) is not None:
+            return native_step
+        return super().native_step
+
+    @property
+    def extra_state_attributes(self):
+        """Return extra state attributes."""
+        if (
+            esa := self.entity_description.extra_state_attributes_fn(self.device, self.member)
+        ) is not None:
+            return esa
+        return super().extra_state_attributes
+
+
 DEVICE_NUMBER_MAP: dict[type[Device], list[PetLibroNumberEntityDescription]] = {
-    Feeder: [
-    ],
+    Feeder: [],
     AirSmartFeeder: [
         PetLibroNumberEntityDescription[AirSmartFeeder](
-            key ="manual_feed_quantity",
-            translation_key ="manual_feed_quantity",
-            native_unit_of_measurement = "  / 24 cups",
-            native_max_value = 24,
-            native_min_value = 1,
-            native_step = 1,
-            value = lambda device: device.manual_feed_quantity,
-            method = lambda device, value: device.set_manual_feed_quantity(value),
-            name = "Manual Feed Quantity"
+            key="manual_feed_quantity",
+            translation_key="manual_feed_quantity",
+            name="Manual Feed Quantity",
+            icon="mdi:scale",
+            native_unit_of_measurement_fn=lambda member: member.feedUnitType.symbol,
+            native_max_value_fn=lambda m: Unit.round(m.feedUnitType.factor * 12, m.feedUnitType),
+            native_min_value_fn=lambda member: round(member.feedUnitType.factor, 16),
+            native_step_fn=lambda member: member.feedUnitType.factor,
+            method=lambda d, m, v: d.set_manual_feed_quantity(Unit.convert_feed(v, m.feedUnitType, None)),
+            value_fn=lambda d, m: Unit.convert_feed(d.manual_feed_quantity, None, m.feedUnitType, True),
+            extra_state_attributes_fn=lambda d, m: {"grain": d.manual_feed_quantity}|{
+                unit.symbol: Unit.convert_feed(d.manual_feed_quantity, None, unit, True)
+                for unit in VALID_UNIT_TYPES[API.FEED_UNIT] if unit
+            },
+        ),
+        PetLibroNumberEntityDescription[AirSmartFeeder](
+            key="manual_feed_quantity_grain",
+            translation_key="manual_feed_quantity_grain",
+            name="Manual Feed Quantity (Grain)",
+            icon="mdi:scale",
+            device_class=NumberDeviceClass.POWER_FACTOR,
+            native_max_value=12,
+            native_min_value=1,
+            method=lambda device, m, value: device.set_manual_feed_quantity(value),
+            value_fn=lambda device, m: device.manual_feed_quantity,
+            extra_state_attributes_fn=lambda d, m: {"grain": d.manual_feed_quantity}|{
+                unit.symbol: Unit.convert_feed(d.manual_feed_quantity, None, unit, True)
+                for unit in VALID_UNIT_TYPES[API.FEED_UNIT] if unit
+            },
         ),
     ],
     GranarySmartFeeder: [
         PetLibroNumberEntityDescription[GranarySmartFeeder](
-            key ="manual_feed_quantity",
-            translation_key ="manual_feed_quantity",
-            native_unit_of_measurement = "  / 12 cups",
-            native_max_value = 12,
-            native_min_value = 1,
-            native_step = 1,
-            value = lambda device: device.manual_feed_quantity,
-            method = lambda device, value: device.set_manual_feed_quantity(value),
-            name = "Manual Feed Quantity"
+            key="manual_feed_quantity",
+            translation_key="manual_feed_quantity",
+            name="Manual Feed Quantity",
+            icon="mdi:scale",
+            native_unit_of_measurement_fn=lambda member: member.feedUnitType.symbol,
+            native_max_value_fn=lambda m: Unit.round(m.feedUnitType.factor * 12, m.feedUnitType),
+            native_min_value_fn=lambda member: round(member.feedUnitType.factor, 16),
+            native_step_fn=lambda member: member.feedUnitType.factor,
+            method=lambda d, m, v: d.set_manual_feed_quantity(Unit.convert_feed(v, m.feedUnitType, None)),
+            value_fn=lambda d, m: Unit.convert_feed(d.manual_feed_quantity, None, m.feedUnitType, True),
+            extra_state_attributes_fn=lambda d, m: {"grain": d.manual_feed_quantity}|{
+                unit.symbol: Unit.convert_feed(d.manual_feed_quantity, None, unit, True)
+                for unit in VALID_UNIT_TYPES[API.FEED_UNIT] if unit
+            },
+        ),
+        PetLibroNumberEntityDescription[GranarySmartFeeder](
+            key="manual_feed_quantity_grain",
+            translation_key="manual_feed_quantity_grain",
+            name="Manual Feed Quantity (Grain)",
+            icon="mdi:scale",
+            device_class=NumberDeviceClass.POWER_FACTOR,
+            native_max_value=12,
+            native_min_value=1,
+            method=lambda device, m, value: device.set_manual_feed_quantity(value),
+            value_fn=lambda device, m: device.manual_feed_quantity,
+            extra_state_attributes_fn=lambda d, m: {"grain": d.manual_feed_quantity}|{
+                unit.symbol: Unit.convert_feed(d.manual_feed_quantity, None, unit, True)
+                for unit in VALID_UNIT_TYPES[API.FEED_UNIT] if unit
+            },
         ),
         PetLibroNumberEntityDescription[GranarySmartFeeder](
             key="desiccant_frequency",
@@ -115,22 +201,42 @@ DEVICE_NUMBER_MAP: dict[type[Device], list[PetLibroNumberEntityDescription]] = {
             native_max_value=60,
             native_min_value=1,
             native_step=1,
-            value=lambda device: device.desiccant_frequency,
-            method=lambda device, value: device.set_desiccant_frequency(value),
-            name="Desiccant Frequency"
+            value_fn=lambda device, m: device.desiccant_frequency,
+            method=lambda device, m, value: device.set_desiccant_frequency(value),
+            name="Desiccant Frequency",
         ),
     ],
     GranarySmartCameraFeeder: [
         PetLibroNumberEntityDescription[GranarySmartCameraFeeder](
-            key ="manual_feed_quantity",
-            translation_key ="manual_feed_quantity",
-            native_unit_of_measurement = "  / 12 cups",
-            native_max_value = 12,
-            native_min_value = 1,
-            native_step = 1,
-            value = lambda device: device.manual_feed_quantity,
-            method = lambda device, value: device.set_manual_feed_quantity(value),
-            name = "Manual Feed Quantity"
+            key="manual_feed_quantity",
+            translation_key="manual_feed_quantity",
+            name="Manual Feed Quantity",
+            icon="mdi:scale",
+            native_unit_of_measurement_fn=lambda member: member.feedUnitType.symbol,
+            native_max_value_fn=lambda m: Unit.round(m.feedUnitType.factor * 12, m.feedUnitType),
+            native_min_value_fn=lambda member: round(member.feedUnitType.factor, 16),
+            native_step_fn=lambda member: member.feedUnitType.factor,
+            method=lambda d, m, v: d.set_manual_feed_quantity(Unit.convert_feed(v, m.feedUnitType, None)),
+            value_fn=lambda d, m: Unit.convert_feed(d.manual_feed_quantity, None, m.feedUnitType, True),
+            extra_state_attributes_fn=lambda d, m: {"grain": d.manual_feed_quantity}|{
+                unit.symbol: Unit.convert_feed(d.manual_feed_quantity, None, unit, True)
+                for unit in VALID_UNIT_TYPES[API.FEED_UNIT] if unit
+            },
+        ),
+        PetLibroNumberEntityDescription[GranarySmartCameraFeeder](
+            key="manual_feed_quantity_grain",
+            translation_key="manual_feed_quantity_grain",
+            name="Manual Feed Quantity (Grain)",
+            icon="mdi:scale",
+            device_class=NumberDeviceClass.POWER_FACTOR,
+            native_max_value=12,
+            native_min_value=1,
+            method=lambda device, m, value: device.set_manual_feed_quantity(value),
+            value_fn=lambda device, m: device.manual_feed_quantity,
+            extra_state_attributes_fn=lambda d, m: {"grain": d.manual_feed_quantity}|{
+                unit.symbol: Unit.convert_feed(d.manual_feed_quantity, None, unit, True)
+                for unit in VALID_UNIT_TYPES[API.FEED_UNIT] if unit
+            },
         ),
     ],
     OneRFIDSmartFeeder: [
@@ -143,9 +249,9 @@ DEVICE_NUMBER_MAP: dict[type[Device], list[PetLibroNumberEntityDescription]] = {
             native_max_value=60,
             native_min_value=1,
             native_step=1,
-            value=lambda device: device.desiccant_cycle,
-            method=lambda device, value: device.set_desiccant_cycle(value),
-            name="Desiccant Cycle"
+            value_fn=lambda device, m: device.desiccant_cycle,
+            method=lambda device, m, value: device.set_desiccant_cycle(value),
+            name="Desiccant Cycle",
         ),
         PetLibroNumberEntityDescription[OneRFIDSmartFeeder](
             key="sound_level",
@@ -155,9 +261,9 @@ DEVICE_NUMBER_MAP: dict[type[Device], list[PetLibroNumberEntityDescription]] = {
             native_max_value=100,
             native_min_value=1,
             native_step=1,
-            value=lambda device: device.sound_level,
-            method=lambda device, value: device.set_sound_level(value),
-            name="Sound Level"
+            value_fn=lambda device, m: device.sound_level,
+            method=lambda device, m, value: device.set_sound_level(value),
+            name="Sound Level",
         ),
         PetLibroNumberEntityDescription[OneRFIDSmartFeeder](
             key="lid_close_time",
@@ -167,35 +273,74 @@ DEVICE_NUMBER_MAP: dict[type[Device], list[PetLibroNumberEntityDescription]] = {
             native_max_value=10,
             native_min_value=1,
             native_step=1,
-            value=lambda device: device.lid_close_time,
-            method=lambda device, value: device.set_lid_close_time(value),
-            name="Lid Close Time"
+            value_fn=lambda device, m: device.lid_close_time,
+            method=lambda device, m, value: device.set_lid_close_time(value),
+            name="Lid Close Time",
         ),
         PetLibroNumberEntityDescription[OneRFIDSmartFeeder](
             key="manual_feed_quantity",
             translation_key="manual_feed_quantity",
-            native_unit_of_measurement=" / 12 cups",
+            name="Manual Feed Quantity",
+            icon="mdi:scale",
+            native_unit_of_measurement_fn=lambda member: member.feedUnitType.symbol,
+            native_max_value_fn=lambda m: Unit.round(m.feedUnitType.factor * 12, m.feedUnitType),
+            native_min_value_fn=lambda member: round(member.feedUnitType.factor, 16),
+            native_step_fn=lambda member: member.feedUnitType.factor,
+            method=lambda d, m, v: d.set_manual_feed_quantity(Unit.convert_feed(v, m.feedUnitType, None)),
+            value_fn=lambda d, m: Unit.convert_feed(d.manual_feed_quantity, None, m.feedUnitType, True),
+            extra_state_attributes_fn=lambda d, m: {"grain": d.manual_feed_quantity}|{
+                unit.symbol: Unit.convert_feed(d.manual_feed_quantity, None, unit, True)
+                for unit in VALID_UNIT_TYPES[API.FEED_UNIT] if unit
+            },
+        ),
+        PetLibroNumberEntityDescription[OneRFIDSmartFeeder](
+            key="manual_feed_quantity_grain",
+            translation_key="manual_feed_quantity_grain",
+            name="Manual Feed Quantity (Grain)",
+            icon="mdi:scale",
+            device_class=NumberDeviceClass.POWER_FACTOR,
             native_max_value=12,
             native_min_value=1,
-            native_step=1,
-            value=lambda device: getattr(device, "manual_feed_quantity", 1),  # Default to 1 if not set
-            method=lambda device, value: device.set_manual_feed_quantity(value),
-            name="Manual Feed Quantity"
+            method=lambda device, m, value: device.set_manual_feed_quantity(value),
+            value_fn=lambda device, m: device.manual_feed_quantity,
+            extra_state_attributes_fn=lambda d, m: {"grain": d.manual_feed_quantity}|{
+                unit.symbol: Unit.convert_feed(d.manual_feed_quantity, None, unit, True)
+                for unit in VALID_UNIT_TYPES[API.FEED_UNIT] if unit
+            },
         ),
     ],
-    PolarWetFoodFeeder: [
-    ],
+    PolarWetFoodFeeder: [],
     SpaceSmartFeeder: [
         PetLibroNumberEntityDescription[SpaceSmartFeeder](
-            key ="manual_feed_quantity",
-            translation_key ="manual_feed_quantity",
-            native_unit_of_measurement = "  / 12 cups",
-            native_max_value = 12,
-            native_min_value = 1,
-            native_step = 1,
-            value = lambda device: device.manual_feed_quantity,
-            method = lambda device, value: device.set_manual_feed_quantity(value),
-            name = "Manual Feed Quantity"
+            key="manual_feed_quantity",
+            translation_key="manual_feed_quantity",
+            name="Manual Feed Quantity",
+            icon="mdi:scale",
+            native_unit_of_measurement_fn=lambda member: member.feedUnitType.symbol,
+            native_max_value_fn=lambda m: Unit.round(m.feedUnitType.factor * 12, m.feedUnitType),
+            native_min_value_fn=lambda member: round(member.feedUnitType.factor, 16),
+            native_step_fn=lambda member: member.feedUnitType.factor,
+            method=lambda d, m, v: d.set_manual_feed_quantity(Unit.convert_feed(v, m.feedUnitType, None)),
+            value_fn=lambda d, m: Unit.convert_feed(d.manual_feed_quantity, None, m.feedUnitType, True),
+            extra_state_attributes_fn=lambda d, m: {"grain": d.manual_feed_quantity}|{
+                unit.symbol: Unit.convert_feed(d.manual_feed_quantity, None, unit, True)
+                for unit in VALID_UNIT_TYPES[API.FEED_UNIT] if unit
+            },
+        ),
+        PetLibroNumberEntityDescription[SpaceSmartFeeder](
+            key="manual_feed_quantity_grain",
+            translation_key="manual_feed_quantity_grain",
+            name="Manual Feed Quantity (Grain)",
+            icon="mdi:scale",
+            device_class=NumberDeviceClass.POWER_FACTOR,
+            native_max_value=12,
+            native_min_value=1,
+            method=lambda device, m, value: device.set_manual_feed_quantity(value),
+            value_fn=lambda device, m: device.manual_feed_quantity,
+            extra_state_attributes_fn=lambda d, m: {"grain": d.manual_feed_quantity}|{
+                unit.symbol: Unit.convert_feed(d.manual_feed_quantity, None, unit, True)
+                for unit in VALID_UNIT_TYPES[API.FEED_UNIT] if unit
+            },
         ),
         PetLibroNumberEntityDescription[SpaceSmartFeeder](
             key="sound_level",
@@ -205,9 +350,9 @@ DEVICE_NUMBER_MAP: dict[type[Device], list[PetLibroNumberEntityDescription]] = {
             native_max_value=100,
             native_min_value=1,
             native_step=1,
-            value=lambda device: device.sound_level,
-            method=lambda device, value: device.set_sound_level(value),
-            name="Sound Level"
+            value_fn=lambda device, m: device.sound_level,
+            method=lambda device, m, value: device.set_sound_level(value),
+            name="Sound Level",
         ),
     ],
     DockstreamSmartFountain: [
@@ -219,9 +364,9 @@ DEVICE_NUMBER_MAP: dict[type[Device], list[PetLibroNumberEntityDescription]] = {
             native_max_value=180,
             native_min_value=1,
             native_step=1,
-            value=lambda device: device.water_interval,
-            method=lambda device, value: device.set_water_interval(value),
-            name="Water Interval"
+            value_fn=lambda device, m: device.water_interval,
+            method=lambda device, m, value: device.set_water_interval(value),
+            name="Water Interval",
         ),
         PetLibroNumberEntityDescription[DockstreamSmartFountain](
             key="water_dispensing_duration",
@@ -231,9 +376,9 @@ DEVICE_NUMBER_MAP: dict[type[Device], list[PetLibroNumberEntityDescription]] = {
             native_max_value=180,
             native_min_value=1,
             native_step=1,
-            value=lambda device: device.water_dispensing_duration,
-            method=lambda device, value: device.set_water_dispensing_duration(value),
-            name="Water Dispensing Duration"
+            value_fn=lambda device, m: device.water_dispensing_duration,
+            method=lambda device, m, value: device.set_water_dispensing_duration(value),
+            name="Water Dispensing Duration",
         ),
         PetLibroNumberEntityDescription[DockstreamSmartFountain](
             key="cleaning_cycle",
@@ -244,9 +389,9 @@ DEVICE_NUMBER_MAP: dict[type[Device], list[PetLibroNumberEntityDescription]] = {
             native_max_value=60,
             native_min_value=1,
             native_step=1,
-            value=lambda device: device.cleaning_cycle,
-            method=lambda device, value: device.set_cleaning_cycle(value),
-            name="Cleaning Cycle"
+            value_fn=lambda device, m: device.cleaning_cycle,
+            method=lambda device, m, value: device.set_cleaning_cycle(value),
+            name="Cleaning Cycle",
         ),
         PetLibroNumberEntityDescription[DockstreamSmartFountain](
             key="filter_cycle",
@@ -257,9 +402,9 @@ DEVICE_NUMBER_MAP: dict[type[Device], list[PetLibroNumberEntityDescription]] = {
             native_max_value=60,
             native_min_value=1,
             native_step=1,
-            value=lambda device: device.filter_cycle,
-            method=lambda device, value: device.set_filter_cycle(value),
-            name="Filter Cycle"
+            value_fn=lambda device, m: device.filter_cycle,
+            method=lambda device, m, value: device.set_filter_cycle(value),
+            name="Filter Cycle",
         ),
     ],
     DockstreamSmartRFIDFountain: [
@@ -271,9 +416,9 @@ DEVICE_NUMBER_MAP: dict[type[Device], list[PetLibroNumberEntityDescription]] = {
             native_max_value=180,
             native_min_value=1,
             native_step=1,
-            value=lambda device: device.water_interval,
-            method=lambda device, value: device.set_water_interval(value),
-            name="Water Interval"
+            value_fn=lambda device, m: device.water_interval,
+            method=lambda device, m, value: device.set_water_interval(value),
+            name="Water Interval",
         ),
         PetLibroNumberEntityDescription[DockstreamSmartRFIDFountain](
             key="water_dispensing_duration",
@@ -283,9 +428,9 @@ DEVICE_NUMBER_MAP: dict[type[Device], list[PetLibroNumberEntityDescription]] = {
             native_max_value=180,
             native_min_value=1,
             native_step=1,
-            value=lambda device: device.water_dispensing_duration,
-            method=lambda device, value: device.set_water_dispensing_duration(value),
-            name="Water Dispensing Duration"
+            value_fn=lambda device, m: device.water_dispensing_duration,
+            method=lambda device, m, value: device.set_water_dispensing_duration(value),
+            name="Water Dispensing Duration",
         ),
         PetLibroNumberEntityDescription[DockstreamSmartRFIDFountain](
             key="cleaning_cycle",
@@ -296,9 +441,9 @@ DEVICE_NUMBER_MAP: dict[type[Device], list[PetLibroNumberEntityDescription]] = {
             native_max_value=60,
             native_min_value=1,
             native_step=1,
-            value=lambda device: device.cleaning_cycle,
-            method=lambda device, value: device.set_cleaning_cycle(value),
-            name="Cleaning Cycle"
+            value_fn=lambda device, m: device.cleaning_cycle,
+            method=lambda device, m, value: device.set_cleaning_cycle(value),
+            name="Cleaning Cycle",
         ),
         PetLibroNumberEntityDescription[DockstreamSmartRFIDFountain](
             key="filter_cycle",
@@ -309,9 +454,9 @@ DEVICE_NUMBER_MAP: dict[type[Device], list[PetLibroNumberEntityDescription]] = {
             native_max_value=60,
             native_min_value=1,
             native_step=1,
-            value=lambda device: device.filter_cycle,
-            method=lambda device, value: device.set_filter_cycle(value),
-            name="Filter Cycle"
+            value_fn=lambda device, m: device.filter_cycle,
+            method=lambda device, m, value: device.set_filter_cycle(value),
+            name="Filter Cycle",
         ),
     ],
 }

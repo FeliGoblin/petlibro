@@ -48,8 +48,17 @@
             "electric_quantity": {
                 "name": "ব্যাটারি / এসি %"
             },
-            "today_feeding_quantity": {
-                "name": "আজকের খাওয়ানোর পরিমাণ"
+            "today_feeding_quantity_weight": {
+                "name": "আজকের খাবারের পরিমাণ (ওজন)"
+            },
+            "today_feeding_quantity_volume": {
+                "name": "আজকের খাবারের পরিমাণ (পরিমাণ)"
+            },
+            "last_feed_quantity_weight": {
+                "name": "শেষ খাওয়ানোর পরিমাণ (ওজন)"
+            },
+            "last_feed_quantity_volume": {
+                "name": "শেষ খাওয়ানোর পরিমাণ (পরিমাণ)"
             },
             "today_feeding_times": {
                 "name": "আজকের খাওয়ানোর সময়"
@@ -214,6 +223,12 @@
             },
             "lid_close_time": {
                 "name": "Lid াকনা কাছাকাছি সময়"
+            },
+            "manual_feed_quantity": {
+                "name": "ম্যানুয়াল খাবারের পরিমাণ"
+            },
+            "manual_feed_quantity_grain": {
+                "name": "ম্যানুয়াল খাবারের পরিমাণ (দানা)"
             }
         },
         "select": {

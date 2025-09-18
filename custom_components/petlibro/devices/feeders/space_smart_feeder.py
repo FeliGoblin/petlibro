@@ -316,7 +316,6 @@ class SpaceSmartFeeder(Device):  # Inherit directly from Device
         """Set the manual feed quantity with a default value handling"""
         _LOGGER.debug(f"Setting manual feed quantity: serial={self.serial}, value={value}")
         self.manual_feed_quantity = max(1, min(value, 12))  # Ensure value is within valid range
-        await self.refresh()
 
     # Method for manual feeding
     async def set_manual_feed(self) -> None:

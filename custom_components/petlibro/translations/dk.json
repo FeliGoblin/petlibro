@@ -48,8 +48,17 @@
             "electric_quantity": {
                 "name": "Batteri %"
             },
-            "today_feeding_quantity": {
-                "name": "Dagens Fodermængde"
+            "today_feeding_quantity_weight": {
+                "name": "Dagens Fodermængde (Vægt)"
+            },
+            "today_feeding_quantity_volume": {
+                "name": "Dagens Fodermængde (Volumen)"
+            },
+            "last_feed_quantity_weight": {
+                "name": "Sidste fodermængde (Vægt)"
+            },
+            "last_feed_quantity_volume": {
+                "name": "Sidste fodermængde (Volumen)"
             },
             "today_feeding_times": {
                 "name": "Dagens Fodertælling"
@@ -217,6 +226,12 @@
             },
             "lid_close_time": {
                 "name": "Lågets Lukketid"
+            },
+            "manual_feed_quantity": {
+                "name": "Manuel fodermængde"
+            },
+            "manual_feed_quantity_grain": {
+                "name": "Manuel fodermængde (Korn)"
             }
         },
         "select": {

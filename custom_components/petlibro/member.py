@@ -12,6 +12,7 @@ from .const import (
     DEFAULT_FEED,
     DEFAULT_WATER,
     DEFAULT_WEIGHT,
+    WATER_MAPPING,
     DOMAIN,
     APIKey as API,
     Gender,
@@ -89,7 +90,8 @@ class Member(Event):
     @property
     def waterUnitType(self) -> Unit:
         """Water unit type on account as an Enum."""
-        return self._get_unit_type(API.WATER_UNIT, DEFAULT_WATER)
+        water_unit = self._get_unit_type(API.WATER_UNIT, DEFAULT_WATER)
+        return WATER_MAPPING.get(water_unit, water_unit)
 
     def _get_unit_type(self, key: str, default: Unit) -> Unit:
         """Return a valid Unit Enum for the given key."""

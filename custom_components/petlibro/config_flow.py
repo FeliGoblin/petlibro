@@ -10,17 +10,19 @@ from typing import Any
 import voluptuous as vol
 
 from homeassistant.config_entries import ConfigEntry, ConfigFlow, ConfigFlowResult, OptionsFlow
-from homeassistant.const import CONF_API_TOKEN, CONF_EMAIL, CONF_PASSWORD, CONF_REGION
+from homeassistant.const import CONF_API_TOKEN, CONF_EMAIL, CONF_PASSWORD, CONF_REGION, Platform
 from homeassistant.core import callback
 from homeassistant.data_entry_flow import section
 from homeassistant.helpers.aiohttp_client import async_get_clientsession
 from homeassistant.helpers.selector import selector
+from homeassistant.helpers.entity_registry import async_get as get_entity_registry
 
 from .api import PetLibroAPI
 from .const import (
     DEFAULT_FEED,
     DEFAULT_WATER,
     DEFAULT_WEIGHT,
+    ROUNDING_RULES,
     DOMAIN,
     APIKey as API,
     Gender,
@@ -205,6 +207,7 @@ class PetlibroOptionsFlow(OptionsFlow):
             update_setting_temp = user_input.pop("measurement_unit", {})
             update_info_temp = user_input.copy()
             user_input.update(**update_setting_temp)
+            update_all_units = update_setting_temp.pop("update_all_units", False)
             
             update_setting = self.collect_updates(
                 fields=(API.FEED_UNIT, API.WATER_UNIT, API.WEIGHT_UNIT),
@@ -220,10 +223,28 @@ class PetlibroOptionsFlow(OptionsFlow):
                     API.GENDER: lambda v: self.validate_enum(API.GENDER, v, Gender),
                 },
             )
+                            
+            if update_setting or update_all_units:
+                registry = get_entity_registry(self.hass)
+                for unit_type in self.hub.unit_sensor_unique_ids:
+                    unit = (input if isinstance(input := update_setting.get(unit_type), Unit)
+                        else Unit(input) if input else getattr(self.member, unit_type, None))
+                    if not unit.device_class or (not input and not update_all_units):
+                        continue
+                    _LOGGER.debug("Updating %s sensor entities", unit_type)
+                    display_precision = ROUNDING_RULES.get(unit, 0)
+                    options = { "unit_of_measurement": unit.symbol,
+                                "display_precision": display_precision,
+                                "suggested_display_precision": display_precision }
+                    for unique_id in self.hub.unit_sensor_unique_ids.get(unit_type, {}).get(unit.device_class, []):
+                        entity_id = registry.async_get_entity_id(Platform.SENSOR, DOMAIN, unique_id)
+                        _LOGGER.debug("Setting %s to %s with display precision %s", entity_id, unit.symbol, display_precision)
+                        registry.async_update_entity_options(entity_id, Platform.SENSOR, options)
 
             if not (update_info or update_setting):
                 _LOGGER.debug("No account settings were changed.")
-                return self.async_abort(reason="account_update_nochanges")
+                reason = "account_update_nochanges" + ("_update_sensors" if update_all_units else "")
+                return self.async_abort(reason=reason)
 
             no_error = await self.api.member_update_info(update_info, update_setting)
             await self.hub.async_refresh(force_member=True)
@@ -300,6 +321,7 @@ class PetlibroOptionsFlow(OptionsFlow):
                         getattr(self.member, API.WEIGHT_UNIT, DEFAULT_WEIGHT).lower,
                     ),
                 ): self._unit_selector((Unit.POUNDS, Unit.KILOGRAMS)),
+                vol.Optional("update_all_units", default=user_input.get("update_all_units", False)): bool,
             }
         )
 
@@ -326,7 +348,7 @@ class PetlibroOptionsFlow(OptionsFlow):
 
         form_value_str = str(form_value).upper()
         if form_value_str in enum_cls.__members__:
-            return enum_cls[form_value_str].value
+            return enum_cls[form_value_str]
 
         _LOGGER.error("Invalid value: %s for API key: %s", form_value, api_key)
         return None

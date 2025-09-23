@@ -12,7 +12,7 @@ from homeassistant.helpers.aiohttp_client import async_get_clientsession
 from homeassistant.helpers.update_coordinator import DataUpdateCoordinator, UpdateFailed
 from aiohttp import ClientResponseError, ClientConnectorError
 from .api import PetLibroAPI  # Use a relative import if inside the same package
-from .const import DOMAIN, CONF_EMAIL, CONF_PASSWORD  # Import CONF_EMAIL and CONF_PASSWORD
+from .const import DOMAIN, CONF_EMAIL, CONF_PASSWORD, APIKey  # Import CONF_EMAIL and CONF_PASSWORD
 from .api import PetLibroAPIError
 from .devices import Device, product_name_map
 from .member import Member
@@ -31,6 +31,11 @@ class PetLibroHub:
         self.last_refresh_times = {}  # Track the last refresh time for the member & each device
         self.loaded_device_sn = set()  # Track device serial numbers that have already been loaded
         self._last_online_status = {}  # Store online status per device
+        self.unit_sensor_unique_ids: dict[str | APIKey, dict[str, list[str]]] = {
+            APIKey.FEED_UNIT: {"weight": [], "volume": []},
+            APIKey.WEIGHT_UNIT: {"weight": []},
+            APIKey.WATER_UNIT: {"volume": []},
+        }
 
         # Fetch email, password, and region from entry.data
         email = data.get(CONF_EMAIL)

@@ -87,23 +87,30 @@ class APIKey(StrEnum):
 class Unit(IntEnum):
     """Weight, feed, and water units with symbols and conversion."""
 
-    CUPS = 1, "cup", 1/12,
-    OUNCES = 2, UnitOfMass.OUNCES, 0.35,
-    GRAMS = 3, UnitOfMass.GRAMS, 10,
-    MILLILITERS = 4, UnitOfVolume.MILLILITERS, 20,
+    CUPS = 1, 1/12, "cup", ""
+    OUNCES = 2, 0.35, UnitOfMass.OUNCES, "weight"
+    GRAMS = 3, 10, UnitOfMass.GRAMS, "weight"
+    MILLILITERS = 4, 20, UnitOfVolume.MILLILITERS, "volume"
 
-    KILOGRAMS = 5, UnitOfMass.KILOGRAMS, 1,
-    POUNDS = 6, UnitOfMass.POUNDS, 2.20459,
+    KILOGRAMS = 5, 1, UnitOfMass.KILOGRAMS, "weight"
+    POUNDS = 6, 2.20459, UnitOfMass.POUNDS, "weight"
 
-    WATER_OUNCES = 2, UnitOfVolume.FLUID_OUNCES, 0.035195,
-    WATER_MILLILITERS = 4, UnitOfVolume.MILLILITERS, 1,
+    WATER_OUNCES = 2 +6, 0.035195, UnitOfVolume.FLUID_OUNCES, "volume"
+    WATER_MILLILITERS = 4 +6, 1, UnitOfVolume.MILLILITERS, "volume"
+    
+    # KILOGRAMS, POUNDS, and WATER_ values can be converted using HA's built-in unit
+    # converter, so their "factor"s and "device_class"s likely won't be used much or at all.
+    
+    # WATER_ int values must be different to avoid aliasing. Take care when using .value
 
-    def __new__(cls, value: int, symbol: str, factor: float):
+    def __new__(cls, value: int, factor: float, symbol: str, device_class: str):
         "Ensures IntEnum functionality while allowing extra attributes."
-        obj = int.__new__(cls, value)
+        
+        obj = int.__new__(cls, value if value <= 6 else value - 6)
         obj._value_ = value
-        obj._symbol = symbol  # noqa: SLF001
         obj._factor = factor  # noqa: SLF001
+        obj._symbol = symbol  # noqa: SLF001
+        obj._device_class = device_class  # noqa: SLF001
         return obj
 
     @property
@@ -112,14 +119,19 @@ class Unit(IntEnum):
         return self.name.lower()
 
     @property
+    def factor(self) -> float:
+        """Returns unit conversion factor."""
+        return self._factor
+
+    @property
     def symbol(self) -> str:
         """Returns unit symbol."""
         return self._symbol
 
     @property
-    def factor(self) -> float:
-        """Returns unit conversion factor."""
-        return self._factor
+    def device_class(self) -> str:
+        """Returns unit device class."""
+        return self._device_class
 
     @classmethod
     def round(self, value: float, unit: _Unit):
@@ -155,8 +167,11 @@ DEFAULT_WATER = Unit.WATER_OUNCES
 VALID_UNIT_TYPES: dict[str, set[Unit]] = {
     APIKey.WEIGHT_UNIT: {Unit.POUNDS, Unit.KILOGRAMS, None},
     APIKey.FEED_UNIT: {Unit.CUPS, Unit.OUNCES, Unit.GRAMS, Unit.MILLILITERS, None},
-    APIKey.WATER_UNIT: {Unit.OUNCES, Unit.MILLILITERS, Unit.WATER_OUNCES, Unit.WATER_MILLILITERS, None},
+    APIKey.WATER_UNIT: {Unit.WATER_OUNCES, Unit.WATER_MILLILITERS, None},
 }
 ROUNDING_RULES = {
     Unit.CUPS: 3, Unit.OUNCES: 2, Unit.POUNDS: 2, Unit.WATER_OUNCES: 2, Unit.KILOGRAMS: 2
+}
+WATER_MAPPING = {
+    Unit.MILLILITERS: Unit.WATER_MILLILITERS, Unit.OUNCES: Unit.WATER_OUNCES
 }

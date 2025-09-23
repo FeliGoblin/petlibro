@@ -25,6 +25,63 @@
             }
         }
     },
+    "options": {
+        "abort": {
+            "account_update_success": "تم تحديث الحساب",
+            "account_update_nomember": "لم يتم تحميل بيانات العضو، يرجى التحقق من السجلات",
+            "account_update_nochanges": "لم يتم تغيير أي إعدادات",
+            "account_update_nochanges_update_sensors": "لم يتم تغيير أي إعدادات\nتم تحديث كيانات المستشعر",
+            "error_check_logs": "خطأ، يرجى التحقق من السجلات"
+        },
+        "error": {
+            "unknown": "خطأ غير متوقع"
+        },
+        "step": {
+            "init": {
+                "menu_options": {
+                    "account_settings": "إعدادات الحساب"
+                }
+            },
+            "account_settings": {
+                "title": "إعدادات الحساب",
+                "description": "للحساب: {email}",
+                "data": {
+                    "nickname": "الاسم المستعار",
+                    "gender": "الجنس"
+                },
+                "sections": {
+                    "measurement_unit": {
+                        "name": "وحدات القياس",
+                        "data": {
+                            "feedUnitType": "المغذي/التغذية",
+                            "waterUnitType": "النافورة/الشرب",
+                            "weightUnitType": "الوزن",
+                            "update_all_units": "تحديث وحدة القياس لجميع كيانات أجهزة استشعار Petlibro"
+                        },
+                        "data_description": {
+                            "update_all_units": "بشكل افتراضي، تغيير الوحدة هنا يحدّث فقط كيانات المستشعر من هذا النوع."
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "selector": {
+        "member_gender": {
+            "options": {
+                "male": "ذكر",
+                "female": "أنثى",
+                "none": "أفضل عدم القول"
+            }
+        },
+        "pet_sex": {
+            "options": {
+                "male": "ذكر",
+                "female": "أنثى",
+                "none": "لم يتم الاختيار"
+            }
+        }
+    },
     "entity": {
         "sensor": {
             "device_sn": {
@@ -226,9 +283,6 @@
             },
             "manual_feed_quantity": {
                 "name": "كمية التغذية اليدوية"
-            },
-            "manual_feed_quantity_portion": {
-                "name": "كمية التغذية اليدوية (وجبة)"
             }
         },
         "select": {

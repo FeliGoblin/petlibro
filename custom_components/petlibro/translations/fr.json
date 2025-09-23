@@ -25,6 +25,63 @@
             }
         }
     },
+    "options": {
+        "abort": {
+            "account_update_success": "Compte mis à jour",
+            "account_update_nomember": "Données du membre non chargées, veuillez vérifier les journaux",
+            "account_update_nochanges": "Aucun paramètre n'a été modifié",
+            "account_update_nochanges_update_sensors": "Aucun paramètre n'a été modifié\nEntités de capteurs mises à jour",
+            "error_check_logs": "Erreur, veuillez vérifier les journaux"
+        },
+        "error": {
+            "unknown": "Erreur inattendue"
+        },
+        "step": {
+            "init": {
+                "menu_options": {
+                    "account_settings": "Paramètres du compte"
+                }
+            },
+            "account_settings": {
+                "title": "Paramètres du compte",
+                "description": "Pour le compte : {email}",
+                "data": {
+                    "nickname": "Surnom",
+                    "gender": "Genre"
+                },
+                "sections": {
+                    "measurement_unit": {
+                        "name": "Unités de mesure",
+                        "data": {
+                            "feedUnitType": "Distributeur/Alimentation",
+                            "waterUnitType": "Fontaine/Boisson",
+                            "weightUnitType": "Poids",
+                            "update_all_units": "Mettre à jour l'unité de mesure de toutes les entités de capteurs d’unité Petlibro"
+                        },
+                        "data_description": {
+                            "update_all_units": "Par défaut, changer une unité ici met seulement à jour les entités de capteurs de ce type."
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "selector": {
+        "member_gender": {
+            "options": {
+                "male": "Homme",
+                "female": "Femme",
+                "none": "Préférer ne pas dire"
+            }
+        },
+        "pet_sex": {
+            "options": {
+                "male": "Mâle",
+                "female": "Femelle",
+                "none": "Aucun sélectionné"
+            }
+        }
+    },
     "entity": {
         "sensor": {
             "device_sn": {
@@ -226,9 +283,6 @@
             },
             "manual_feed_quantity": {
                 "name": "Quantité de nourriture manuelle"
-            },
-            "manual_feed_quantity_portion": {
-                "name": "Quantité de nourriture manuelle (Portion)"
             }
         },
         "select": {

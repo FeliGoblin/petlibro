@@ -413,7 +413,8 @@ DEVICE_NUMBER_MAP: dict[type[Device], list[PetLibroNumberEntityDescription]] = {
             native_min_value_fn=lambda m: Unit.round(m.waterUnitType.factor * 650, m.waterUnitType),
             native_step_fn=lambda m: Unit.round(m.waterUnitType.factor, m.waterUnitType),
             value_fn=lambda d, m: Unit.convert_feed(d.water_low_threshold, None, m.waterUnitType, True),
-            method=lambda d, m, v: d.set_water_low_threshold(VolumeConverter.convert(v, m.waterUnitType.symbol, UnitOfVolume.MILLILITERS)),
+            method=lambda d, m, v: d.set_water_low_threshold(round(VolumeConverter.convert(
+                v, m.waterUnitType.symbol, UnitOfVolume.MILLILITERS))),
             name="Water Low Threshold"
         ),
         PetLibroNumberEntityDescription[Dockstream2SmartCordlessFountain](
@@ -468,7 +469,8 @@ DEVICE_NUMBER_MAP: dict[type[Device], list[PetLibroNumberEntityDescription]] = {
             native_min_value_fn=lambda m: Unit.round(m.waterUnitType.factor * 650, m.waterUnitType),
             native_step_fn=lambda m: Unit.round(m.waterUnitType.factor, m.waterUnitType),
             value_fn=lambda d, m: Unit.convert_feed(d.water_low_threshold, None, m.waterUnitType, True),
-            method=lambda d, m, v: d.set_water_low_threshold(VolumeConverter.convert(v, m.waterUnitType.symbol, UnitOfVolume.MILLILITERS)),
+            method=lambda d, m, v: d.set_water_low_threshold(round(VolumeConverter.convert(
+                v, m.waterUnitType.symbol, UnitOfVolume.MILLILITERS))),
             name="Water Low Threshold"
         ),
         PetLibroNumberEntityDescription[Dockstream2SmartFountain](

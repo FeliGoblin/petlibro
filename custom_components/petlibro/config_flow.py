@@ -229,17 +229,23 @@ class PetlibroOptionsFlow(OptionsFlow):
                 for unit_type in self.hub.unit_sensor_unique_ids:
                     unit = (input if isinstance(input := update_setting.get(unit_type), Unit)
                         else Unit(input) if input else getattr(self.member, unit_type, None))
-                    if not unit.device_class or (not input and not update_all_units):
+                    if (not unit or not unit.device_class) and not update_all_units:
                         continue
                     _LOGGER.debug("Updating %s sensor entities", unit_type)
-                    display_precision = ROUNDING_RULES.get(unit, 0)
-                    options = { "unit_of_measurement": unit.symbol,
-                                "display_precision": display_precision,
-                                "suggested_display_precision": display_precision }
-                    for unique_id in self.hub.unit_sensor_unique_ids.get(unit_type, {}).get(unit.device_class, []):
-                        entity_id = registry.async_get_entity_id(Platform.SENSOR, DOMAIN, unique_id)
-                        _LOGGER.debug("Setting %s to %s with display precision %s", entity_id, unit.symbol, display_precision)
-                        registry.async_update_entity_options(entity_id, Platform.SENSOR, options)
+                    if update_all_units and unit_type == API.FEED_UNIT:
+                        target_units = {"weight": unit if unit.device_class == "weight" else Unit.GRAMS,
+                            "volume": unit if unit.device_class == "volume" else Unit.MILLILITERS}
+                    else:
+                        target_units = {unit.device_class: unit}
+                    for device_class, target_unit in target_units.items():
+                        display_precision = ROUNDING_RULES.get(target_unit, 0)
+                        options = { "unit_of_measurement": target_unit.symbol,
+                                    "display_precision": display_precision,
+                                    "suggested_display_precision": display_precision }
+                        for unique_id in self.hub.unit_sensor_unique_ids.get(unit_type, {}).get(device_class, []):
+                            entity_id = registry.async_get_entity_id(Platform.SENSOR, DOMAIN, unique_id)
+                            _LOGGER.debug("Setting %s to %s with display precision %s", entity_id, unit.symbol, display_precision)
+                            registry.async_update_entity_options(entity_id, Platform.SENSOR, options)
 
             if not (update_info or update_setting):
                 _LOGGER.debug("No account settings were changed.")

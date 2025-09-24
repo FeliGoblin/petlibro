@@ -229,7 +229,7 @@ class PetlibroOptionsFlow(OptionsFlow):
                 for unit_type in self.hub.unit_sensor_unique_ids:
                     unit = (input if isinstance(input := update_setting.get(unit_type), Unit)
                         else Unit(input) if input else getattr(self.member, unit_type, None))
-                    if (not unit or not unit.device_class) and not update_all_units:
+                    if (unit_type not in update_setting or not unit or not unit.device_class) and not update_all_units:
                         continue
                     _LOGGER.debug("Updating %s sensor entities", unit_type)
                     if update_all_units and unit_type == API.FEED_UNIT:

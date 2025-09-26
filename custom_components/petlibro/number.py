@@ -53,7 +53,7 @@ class PetLibroNumberEntityDescription(NumberEntityDescription, PetLibroEntityDes
     native_min_value_fn: Callable[[Member], float | None] = lambda _: None
     native_step_fn: Callable[[Member], float | None] = lambda _: None
     value_fn: Callable[[_DeviceT, Member], float] = lambda d, m: 0
-    method: Callable[[_DeviceT, Member, float], float] = lambda d, m: None
+    method: Callable[[_DeviceT, Member, float], float] = lambda d, m, v: None
     device_class: Optional[NumberDeviceClass] = None
 
 class PetLibroNumberEntity(PetLibroEntity[_DeviceT], NumberEntity):

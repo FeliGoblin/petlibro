@@ -3,6 +3,7 @@ import aiohttp
 from ...api import make_api_call
 from aiohttp import ClientSession, ClientError
 from ...exceptions import PetLibroAPIError
+from ...const import MAX_FEED_PORTIONS
 from ..device import Device
 from typing import cast
 from logging import getLogger
@@ -355,7 +356,7 @@ class OneRFIDSmartFeeder(Device):
     async def set_manual_feed_quantity(self, value: float):
         """Set the manual feed quantity with a default value handling"""
         _LOGGER.debug(f"Setting manual feed quantity: serial={self.serial}, value={value}")
-        self.manual_feed_quantity = max(1, min(value, 12))  # Ensure value is within valid range
+        self.manual_feed_quantity = max(1, min(value, MAX_FEED_PORTIONS))  # Ensure value is within valid range
 
     # Method for manual feeding
     async def set_manual_feed(self) -> None:

@@ -10,18 +10,18 @@ from functools import cached_property
 from typing import Optional
 from typing import Any
 import logging
-from .const import DOMAIN, VALID_UNIT_TYPES, Unit, APIKey as API
+from .const import DOMAIN, Unit, MAX_FEED_PORTIONS
 from homeassistant.components.number import (
     NumberEntity,
     NumberEntityDescription,
     NumberDeviceClass,
-
+    NumberMode
 )
 from homeassistant.core import HomeAssistant
 from homeassistant.const import UnitOfVolume
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
 from homeassistant.config_entries import ConfigEntry  # Added ConfigEntry import
-from homeassistant.util.unit_conversion import MassConverter, VolumeConverter
+from homeassistant.util.unit_conversion import VolumeConverter
 from .hub import PetLibroHub  # Adjust the import path as necessary
 from .member import Member
 
@@ -127,10 +127,11 @@ DEVICE_NUMBER_MAP: dict[type[Device], list[PetLibroNumberEntityDescription]] = {
             translation_key="manual_feed_quantity",
             name="Manual Feed Quantity",
             icon="mdi:scale",
+            mode=NumberMode.SLIDER,
             native_unit_of_measurement_fn=lambda m: m.feedUnitType.symbol 
                 if m.feedUnitType != Unit.CUPS else "/12 cup",
-            native_max_value_fn=lambda m: Unit.round(m.feedUnitType.factor * 12, m.feedUnitType)
-                if m.feedUnitType != Unit.CUPS else 12,
+            native_max_value_fn=lambda m: Unit.round(m.feedUnitType.factor * MAX_FEED_PORTIONS, m.feedUnitType)
+                if m.feedUnitType != Unit.CUPS else MAX_FEED_PORTIONS,
             native_min_value_fn=lambda m: round(m.feedUnitType.factor, 16)
                 if m.feedUnitType != Unit.CUPS else 1,
             native_step_fn=lambda m: m.feedUnitType.factor 
@@ -147,10 +148,11 @@ DEVICE_NUMBER_MAP: dict[type[Device], list[PetLibroNumberEntityDescription]] = {
             translation_key="manual_feed_quantity",
             name="Manual Feed Quantity",
             icon="mdi:scale",
+            mode=NumberMode.SLIDER,
             native_unit_of_measurement_fn=lambda m: m.feedUnitType.symbol 
                 if m.feedUnitType != Unit.CUPS else "/12 cup",
-            native_max_value_fn=lambda m: Unit.round(m.feedUnitType.factor * 12, m.feedUnitType)
-                if m.feedUnitType != Unit.CUPS else 12,
+            native_max_value_fn=lambda m: Unit.round(m.feedUnitType.factor * MAX_FEED_PORTIONS, m.feedUnitType)
+                if m.feedUnitType != Unit.CUPS else MAX_FEED_PORTIONS,
             native_min_value_fn=lambda m: round(m.feedUnitType.factor, 16)
                 if m.feedUnitType != Unit.CUPS else 1,
             native_step_fn=lambda m: m.feedUnitType.factor 
@@ -180,10 +182,11 @@ DEVICE_NUMBER_MAP: dict[type[Device], list[PetLibroNumberEntityDescription]] = {
             translation_key="manual_feed_quantity",
             name="Manual Feed Quantity",
             icon="mdi:scale",
+            mode=NumberMode.SLIDER,
             native_unit_of_measurement_fn=lambda m: m.feedUnitType.symbol 
                 if m.feedUnitType != Unit.CUPS else "/12 cup",
-            native_max_value_fn=lambda m: Unit.round(m.feedUnitType.factor * 12, m.feedUnitType)
-                if m.feedUnitType != Unit.CUPS else 12,
+            native_max_value_fn=lambda m: Unit.round(m.feedUnitType.factor * MAX_FEED_PORTIONS, m.feedUnitType)
+                if m.feedUnitType != Unit.CUPS else MAX_FEED_PORTIONS,
             native_min_value_fn=lambda m: round(m.feedUnitType.factor, 16)
                 if m.feedUnitType != Unit.CUPS else 1,
             native_step_fn=lambda m: m.feedUnitType.factor 
@@ -237,10 +240,11 @@ DEVICE_NUMBER_MAP: dict[type[Device], list[PetLibroNumberEntityDescription]] = {
             translation_key="manual_feed_quantity",
             name="Manual Feed Quantity",
             icon="mdi:scale",
+            mode=NumberMode.SLIDER,
             native_unit_of_measurement_fn=lambda m: m.feedUnitType.symbol 
                 if m.feedUnitType != Unit.CUPS else "/12 cup",
-            native_max_value_fn=lambda m: Unit.round(m.feedUnitType.factor * 12, m.feedUnitType)
-                if m.feedUnitType != Unit.CUPS else 12,
+            native_max_value_fn=lambda m: Unit.round(m.feedUnitType.factor * MAX_FEED_PORTIONS, m.feedUnitType)
+                if m.feedUnitType != Unit.CUPS else MAX_FEED_PORTIONS,
             native_min_value_fn=lambda m: round(m.feedUnitType.factor, 16)
                 if m.feedUnitType != Unit.CUPS else 1,
             native_step_fn=lambda m: m.feedUnitType.factor 
@@ -258,10 +262,11 @@ DEVICE_NUMBER_MAP: dict[type[Device], list[PetLibroNumberEntityDescription]] = {
             translation_key="manual_feed_quantity",
             name="Manual Feed Quantity",
             icon="mdi:scale",
+            mode=NumberMode.SLIDER,
             native_unit_of_measurement_fn=lambda m: m.feedUnitType.symbol 
                 if m.feedUnitType != Unit.CUPS else "/12 cup",
-            native_max_value_fn=lambda m: Unit.round(m.feedUnitType.factor * 12, m.feedUnitType)
-                if m.feedUnitType != Unit.CUPS else 12,
+            native_max_value_fn=lambda m: Unit.round(m.feedUnitType.factor * MAX_FEED_PORTIONS, m.feedUnitType)
+                if m.feedUnitType != Unit.CUPS else MAX_FEED_PORTIONS,
             native_min_value_fn=lambda m: round(m.feedUnitType.factor, 16)
                 if m.feedUnitType != Unit.CUPS else 1,
             native_step_fn=lambda m: m.feedUnitType.factor 

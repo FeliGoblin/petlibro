@@ -95,7 +95,7 @@ class Unit(IntEnum):
     KILOGRAMS = 5, 1, UnitOfMass.KILOGRAMS, "weight"
     POUNDS = 6, 2.20459, UnitOfMass.POUNDS, "weight"
 
-    WATER_OUNCES = 2 +6, 0.035195, UnitOfVolume.FLUID_OUNCES, "volume"
+    WATER_OUNCES = 2 +6, 0.033814, UnitOfVolume.FLUID_OUNCES, "volume"
     WATER_MILLILITERS = 4 +6, 1, UnitOfVolume.MILLILITERS, "volume"
     
     # KILOGRAMS, POUNDS, and WATER_ values can be converted using HA's built-in unit

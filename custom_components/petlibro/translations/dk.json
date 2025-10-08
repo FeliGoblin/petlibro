@@ -136,6 +136,9 @@
                 "name": "Nuværende Vægt"
             },
             "weight_percent": {
+                "name": "Resterende Vand (%)"
+            },
+            "remaining_water": {
                 "name": "Resterende Vand"
             },
             "use_water_interval": {

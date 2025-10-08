@@ -1083,19 +1083,20 @@ DEVICE_SENSOR_MAP: dict[type[Device], list[PetLibroSensorEntityDescription]] = {
             name="Remaining Cleaning Days"
         ),
         PetLibroSensorEntityDescription[DockstreamSmartFountain](
-            key="weight",
-            translation_key="weight",
-            name="Current Weight",
-            icon="mdi:scale",
-            native_unit_of_measurement=UnitOfMass.GRAMS,
-            suggested_unit_of_measurement_fn=lambda m: m.weightUnitType.symbol,
+            key="remaining_water",
+            translation_key="remaining_water",
+            name="Remaining Water Volume",
+            icon="mdi:water",
+            native_unit_of_measurement=UnitOfVolume.MILLILITERS,
+            suggested_unit_of_measurement_fn=lambda m: m.waterUnitType.symbol,
             state_class=SensorStateClass.MEASUREMENT,
-            device_class=SensorDeviceClass.WEIGHT,
-            extra_state_attributes_fn=lambda d, m: {UnitOfMass.GRAMS: d.weight}|{
-                unit.symbol: MassConverter.convert(d.weight, UnitOfMass.GRAMS, unit.symbol)
-                for unit in VALID_UNIT_TYPES[API.WEIGHT_UNIT] if unit
+            device_class=SensorDeviceClass.VOLUME,
+            extra_state_attributes_fn=lambda d, m: {
+                unit.symbol: VolumeConverter.convert(d.weight, UnitOfVolume.MILLILITERS, unit.symbol)
+                for unit in VALID_UNIT_TYPES[API.WATER_UNIT] if unit
             },
-            petlibro_unit=API.WEIGHT_UNIT
+            value_fn=lambda d,m: d.weight,
+            petlibro_unit=API.WATER_UNIT
         ),
         PetLibroSensorEntityDescription[DockstreamSmartFountain](
             key="today_drinking_amount",
@@ -1158,7 +1159,7 @@ DEVICE_SENSOR_MAP: dict[type[Device], list[PetLibroSensorEntityDescription]] = {
         PetLibroSensorEntityDescription[DockstreamSmartFountain](
             key="weight_percent",
             translation_key="weight_percent",
-            icon="mdi:scale",
+            icon="mdi:water-percent",
             native_unit_of_measurement="%",
             state_class=SensorStateClass.MEASUREMENT,
             name="Current Weight Percent"
@@ -1223,24 +1224,25 @@ DEVICE_SENSOR_MAP: dict[type[Device], list[PetLibroSensorEntityDescription]] = {
             name="Remaining Cleaning Days"
         ),
         PetLibroSensorEntityDescription[DockstreamSmartRFIDFountain](
-            key="weight",
-            translation_key="weight",
-            name="Current Weight",
-            icon="mdi:scale",
-            native_unit_of_measurement=UnitOfMass.GRAMS,
-            suggested_unit_of_measurement_fn=lambda m: m.weightUnitType.symbol,
+            key="remaining_water",
+            translation_key="remaining_water",
+            name="Remaining Water Volume",
+            icon="mdi:water",
+            native_unit_of_measurement=UnitOfVolume.MILLILITERS,
+            suggested_unit_of_measurement_fn=lambda m: m.waterUnitType.symbol,
             state_class=SensorStateClass.MEASUREMENT,
-            device_class=SensorDeviceClass.WEIGHT,
-            extra_state_attributes_fn=lambda d, m: {UnitOfMass.GRAMS: d.weight}|{
-                unit.symbol: MassConverter.convert(d.weight, UnitOfMass.GRAMS, unit.symbol)
-                for unit in VALID_UNIT_TYPES[API.WEIGHT_UNIT] if unit
+            device_class=SensorDeviceClass.VOLUME,
+            extra_state_attributes_fn=lambda d, m: {
+                unit.symbol: VolumeConverter.convert(d.weight, UnitOfVolume.MILLILITERS, unit.symbol)
+                for unit in VALID_UNIT_TYPES[API.WATER_UNIT] if unit
             },
-            petlibro_unit=API.WEIGHT_UNIT
+            value_fn=lambda d,m: d.weight,
+            petlibro_unit=API.WATER_UNIT
         ),
         PetLibroSensorEntityDescription[DockstreamSmartRFIDFountain](
             key="weight_percent",
             translation_key="weight_percent",
-            icon="mdi:scale",
+            icon="mdi:water-percent",
             native_unit_of_measurement="%",
             state_class=SensorStateClass.MEASUREMENT,
             name="Current Weight Percent"
@@ -1325,24 +1327,25 @@ DEVICE_SENSOR_MAP: dict[type[Device], list[PetLibroSensorEntityDescription]] = {
             name="Remaining Cleaning Days"
         ),
         PetLibroSensorEntityDescription[Dockstream2SmartCordlessFountain](
-            key="weight",
-            translation_key="weight",
-            name="Current Weight",
-            icon="mdi:scale",
-            native_unit_of_measurement=UnitOfMass.GRAMS,
-            suggested_unit_of_measurement_fn=lambda m: m.weightUnitType.symbol,
+            key="remaining_water",
+            translation_key="remaining_water",
+            name="Remaining Water Volume",
+            icon="mdi:water",
+            native_unit_of_measurement=UnitOfVolume.MILLILITERS,
+            suggested_unit_of_measurement_fn=lambda m: m.waterUnitType.symbol,
             state_class=SensorStateClass.MEASUREMENT,
-            device_class=SensorDeviceClass.WEIGHT,
-            extra_state_attributes_fn=lambda d, m: {UnitOfMass.GRAMS: d.weight}|{
-                unit.symbol: MassConverter.convert(d.weight, UnitOfMass.GRAMS, unit.symbol)
-                for unit in VALID_UNIT_TYPES[API.WEIGHT_UNIT] if unit
+            device_class=SensorDeviceClass.VOLUME,
+            extra_state_attributes_fn=lambda d, m: {
+                unit.symbol: VolumeConverter.convert(d.weight, UnitOfVolume.MILLILITERS, unit.symbol)
+                for unit in VALID_UNIT_TYPES[API.WATER_UNIT] if unit
             },
-            petlibro_unit=API.WEIGHT_UNIT
+            value_fn=lambda d,m: d.weight,
+            petlibro_unit=API.WATER_UNIT
         ),
         PetLibroSensorEntityDescription[Dockstream2SmartCordlessFountain](
             key="weight_percent",
             translation_key="weight_percent",
-            icon="mdi:scale",
+            icon="mdi:water-percent",
             native_unit_of_measurement="%",
             state_class=SensorStateClass.MEASUREMENT,
             name="Current Weight Percent"
@@ -1472,24 +1475,25 @@ DEVICE_SENSOR_MAP: dict[type[Device], list[PetLibroSensorEntityDescription]] = {
             name="Remaining Cleaning Days"
         ),
         PetLibroSensorEntityDescription[Dockstream2SmartFountain](
-            key="weight",
-            translation_key="weight",
-            name="Current Weight",
-            icon="mdi:scale",
-            native_unit_of_measurement=UnitOfMass.GRAMS,
-            suggested_unit_of_measurement_fn=lambda m: m.weightUnitType.symbol,
+            key="remaining_water",
+            translation_key="remaining_water",
+            name="Remaining Water Volume",
+            icon="mdi:water",
+            native_unit_of_measurement=UnitOfVolume.MILLILITERS,
+            suggested_unit_of_measurement_fn=lambda m: m.waterUnitType.symbol,
             state_class=SensorStateClass.MEASUREMENT,
-            device_class=SensorDeviceClass.WEIGHT,
-            extra_state_attributes_fn=lambda d, m: {UnitOfMass.GRAMS: d.weight}|{
-                unit.symbol: MassConverter.convert(d.weight, UnitOfMass.GRAMS, unit.symbol)
-                for unit in VALID_UNIT_TYPES[API.WEIGHT_UNIT] if unit
+            device_class=SensorDeviceClass.VOLUME,
+            extra_state_attributes_fn=lambda d, m: {
+                unit.symbol: VolumeConverter.convert(d.weight, UnitOfVolume.MILLILITERS, unit.symbol)
+                for unit in VALID_UNIT_TYPES[API.WATER_UNIT] if unit
             },
-            petlibro_unit=API.WEIGHT_UNIT
+            value_fn=lambda d,m: d.weight,
+            petlibro_unit=API.WATER_UNIT
         ),
         PetLibroSensorEntityDescription[Dockstream2SmartFountain](
             key="weight_percent",
             translation_key="weight_percent",
-            icon="mdi:scale",
+            icon="mdi:water-percent",
             native_unit_of_measurement="%",
             state_class=SensorStateClass.MEASUREMENT,
             name="Current Weight Percent"

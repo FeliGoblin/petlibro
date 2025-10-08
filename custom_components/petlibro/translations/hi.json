@@ -136,6 +136,9 @@
                 "name": "वर्तमान वजन"
             },
             "weight_percent": {
+                "name": "शेष पानी (%)"
+            },
+            "remaining_water": {
                 "name": "शेष पानी"
             },
             "use_water_interval": {

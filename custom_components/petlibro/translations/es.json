@@ -136,6 +136,9 @@
                 "name": "Peso actual"
             },
             "weight_percent": {
+                "name": "Agua restante (%)"
+            },
+            "remaining_water": {
                 "name": "Agua restante"
             },
             "use_water_interval": {

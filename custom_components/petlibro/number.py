@@ -128,18 +128,12 @@ DEVICE_NUMBER_MAP: dict[type[Device], list[PetLibroNumberEntityDescription]] = {
             name="Manual Feed Quantity",
             icon="mdi:scale",
             mode=NumberMode.SLIDER,
-            native_unit_of_measurement_fn=lambda m: m.feedUnitType.symbol 
-                if m.feedUnitType != Unit.CUPS else "/12 cup",
-            native_max_value_fn=lambda m: Unit.round(m.feedUnitType.factor * MAX_FEED_PORTIONS, m.feedUnitType)
-                if m.feedUnitType != Unit.CUPS else MAX_FEED_PORTIONS,
-            native_min_value_fn=lambda m: round(m.feedUnitType.factor, 16)
-                if m.feedUnitType != Unit.CUPS else 1,
-            native_step_fn=lambda m: m.feedUnitType.factor 
-                if m.feedUnitType != Unit.CUPS else 1,
-            method=lambda d, m, v: d.set_manual_feed_quantity(Unit.convert_feed(
-                v, m.feedUnitType if m.feedUnitType != Unit.CUPS else None, None)),
-            value_fn=lambda d, m: Unit.convert_feed(d.manual_feed_quantity, None, m.feedUnitType, True) 
-                if m.feedUnitType != Unit.CUPS else d.manual_feed_quantity,
+            native_unit_of_measurement_fn=lambda m: m.feedUnitType.symbol,
+            native_max_value_fn=lambda m: Unit.round(m.feedUnitType.factor * MAX_FEED_PORTIONS, m.feedUnitType),
+            native_min_value_fn=lambda m: round(m.feedUnitType.factor, 16),
+            native_step_fn=lambda m: m.feedUnitType.factor,
+            method=lambda d, m, v: d.set_manual_feed_quantity(Unit.convert_feed(v, m.feedUnitType, None)),
+            value_fn=lambda d, m: Unit.convert_feed(d.manual_feed_quantity, None, m.feedUnitType, True),
         ),
     ],
     GranarySmartFeeder: [
@@ -149,18 +143,12 @@ DEVICE_NUMBER_MAP: dict[type[Device], list[PetLibroNumberEntityDescription]] = {
             name="Manual Feed Quantity",
             icon="mdi:scale",
             mode=NumberMode.SLIDER,
-            native_unit_of_measurement_fn=lambda m: m.feedUnitType.symbol 
-                if m.feedUnitType != Unit.CUPS else "/12 cup",
-            native_max_value_fn=lambda m: Unit.round(m.feedUnitType.factor * MAX_FEED_PORTIONS, m.feedUnitType)
-                if m.feedUnitType != Unit.CUPS else MAX_FEED_PORTIONS,
-            native_min_value_fn=lambda m: round(m.feedUnitType.factor, 16)
-                if m.feedUnitType != Unit.CUPS else 1,
-            native_step_fn=lambda m: m.feedUnitType.factor 
-                if m.feedUnitType != Unit.CUPS else 1,
-            method=lambda d, m, v: d.set_manual_feed_quantity(Unit.convert_feed(
-                v, m.feedUnitType if m.feedUnitType != Unit.CUPS else None, None)),
-            value_fn=lambda d, m: Unit.convert_feed(d.manual_feed_quantity, None, m.feedUnitType, True) 
-                if m.feedUnitType != Unit.CUPS else d.manual_feed_quantity,
+            native_unit_of_measurement_fn=lambda m: m.feedUnitType.symbol,
+            native_max_value_fn=lambda m: Unit.round(m.feedUnitType.factor * MAX_FEED_PORTIONS, m.feedUnitType),
+            native_min_value_fn=lambda m: round(m.feedUnitType.factor, 16),
+            native_step_fn=lambda m: m.feedUnitType.factor,
+            method=lambda d, m, v: d.set_manual_feed_quantity(Unit.convert_feed(v, m.feedUnitType, None)),
+            value_fn=lambda d, m: Unit.convert_feed(d.manual_feed_quantity, None, m.feedUnitType, True),
         ),
         PetLibroNumberEntityDescription[GranarySmartFeeder](
             key="desiccant_frequency",
@@ -183,18 +171,12 @@ DEVICE_NUMBER_MAP: dict[type[Device], list[PetLibroNumberEntityDescription]] = {
             name="Manual Feed Quantity",
             icon="mdi:scale",
             mode=NumberMode.SLIDER,
-            native_unit_of_measurement_fn=lambda m: m.feedUnitType.symbol 
-                if m.feedUnitType != Unit.CUPS else "/12 cup",
-            native_max_value_fn=lambda m: Unit.round(m.feedUnitType.factor * MAX_FEED_PORTIONS, m.feedUnitType)
-                if m.feedUnitType != Unit.CUPS else MAX_FEED_PORTIONS,
-            native_min_value_fn=lambda m: round(m.feedUnitType.factor, 16)
-                if m.feedUnitType != Unit.CUPS else 1,
-            native_step_fn=lambda m: m.feedUnitType.factor 
-                if m.feedUnitType != Unit.CUPS else 1,
-            method=lambda d, m, v: d.set_manual_feed_quantity(Unit.convert_feed(
-                v, m.feedUnitType if m.feedUnitType != Unit.CUPS else None, None)),
-            value_fn=lambda d, m: Unit.convert_feed(d.manual_feed_quantity, None, m.feedUnitType, True) 
-                if m.feedUnitType != Unit.CUPS else d.manual_feed_quantity,
+            native_unit_of_measurement_fn=lambda m: m.feedUnitType.symbol,
+            native_max_value_fn=lambda m: Unit.round(m.feedUnitType.factor * MAX_FEED_PORTIONS, m.feedUnitType),
+            native_min_value_fn=lambda m: round(m.feedUnitType.factor, 16),
+            native_step_fn=lambda m: m.feedUnitType.factor,
+            method=lambda d, m, v: d.set_manual_feed_quantity(Unit.convert_feed(v, m.feedUnitType, None)),
+            value_fn=lambda d, m: Unit.convert_feed(d.manual_feed_quantity, None, m.feedUnitType, True),
         ),
     ],
     OneRFIDSmartFeeder: [
@@ -241,18 +223,12 @@ DEVICE_NUMBER_MAP: dict[type[Device], list[PetLibroNumberEntityDescription]] = {
             name="Manual Feed Quantity",
             icon="mdi:scale",
             mode=NumberMode.SLIDER,
-            native_unit_of_measurement_fn=lambda m: m.feedUnitType.symbol 
-                if m.feedUnitType != Unit.CUPS else "/12 cup",
-            native_max_value_fn=lambda m: Unit.round(m.feedUnitType.factor * MAX_FEED_PORTIONS, m.feedUnitType)
-                if m.feedUnitType != Unit.CUPS else MAX_FEED_PORTIONS,
-            native_min_value_fn=lambda m: round(m.feedUnitType.factor, 16)
-                if m.feedUnitType != Unit.CUPS else 1,
-            native_step_fn=lambda m: m.feedUnitType.factor 
-                if m.feedUnitType != Unit.CUPS else 1,
-            method=lambda d, m, v: d.set_manual_feed_quantity(Unit.convert_feed(
-                v, m.feedUnitType if m.feedUnitType != Unit.CUPS else None, None)),
-            value_fn=lambda d, m: Unit.convert_feed(d.manual_feed_quantity, None, m.feedUnitType, True) 
-                if m.feedUnitType != Unit.CUPS else d.manual_feed_quantity,
+            native_unit_of_measurement_fn=lambda m: m.feedUnitType.symbol,
+            native_max_value_fn=lambda m: Unit.round(m.feedUnitType.factor * MAX_FEED_PORTIONS, m.feedUnitType),
+            native_min_value_fn=lambda m: round(m.feedUnitType.factor, 16),
+            native_step_fn=lambda m: m.feedUnitType.factor,
+            method=lambda d, m, v: d.set_manual_feed_quantity(Unit.convert_feed(v, m.feedUnitType, None)),
+            value_fn=lambda d, m: Unit.convert_feed(d.manual_feed_quantity, None, m.feedUnitType, True),
         ),
     ],
     PolarWetFoodFeeder: [],
@@ -263,18 +239,12 @@ DEVICE_NUMBER_MAP: dict[type[Device], list[PetLibroNumberEntityDescription]] = {
             name="Manual Feed Quantity",
             icon="mdi:scale",
             mode=NumberMode.SLIDER,
-            native_unit_of_measurement_fn=lambda m: m.feedUnitType.symbol 
-                if m.feedUnitType != Unit.CUPS else "/12 cup",
-            native_max_value_fn=lambda m: Unit.round(m.feedUnitType.factor * MAX_FEED_PORTIONS, m.feedUnitType)
-                if m.feedUnitType != Unit.CUPS else MAX_FEED_PORTIONS,
-            native_min_value_fn=lambda m: round(m.feedUnitType.factor, 16)
-                if m.feedUnitType != Unit.CUPS else 1,
-            native_step_fn=lambda m: m.feedUnitType.factor 
-                if m.feedUnitType != Unit.CUPS else 1,
-            method=lambda d, m, v: d.set_manual_feed_quantity(Unit.convert_feed(
-                v, m.feedUnitType if m.feedUnitType != Unit.CUPS else None, None)),
-            value_fn=lambda d, m: Unit.convert_feed(d.manual_feed_quantity, None, m.feedUnitType, True) 
-                if m.feedUnitType != Unit.CUPS else d.manual_feed_quantity,
+            native_unit_of_measurement_fn=lambda m: m.feedUnitType.symbol,
+            native_max_value_fn=lambda m: Unit.round(m.feedUnitType.factor * MAX_FEED_PORTIONS, m.feedUnitType),
+            native_min_value_fn=lambda m: round(m.feedUnitType.factor, 16),
+            native_step_fn=lambda m: m.feedUnitType.factor,
+            method=lambda d, m, v: d.set_manual_feed_quantity(Unit.convert_feed(v, m.feedUnitType, None)),
+            value_fn=lambda d, m: Unit.convert_feed(d.manual_feed_quantity, None, m.feedUnitType, True),
         ),
         PetLibroNumberEntityDescription[SpaceSmartFeeder](
             key="sound_level",

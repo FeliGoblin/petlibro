@@ -136,6 +136,9 @@
                 "name": "Текущий вес"
             },
             "weight_percent": {
+                "name": "Оставшаяся вода (%)"
+            },
+            "remaining_water": {
                 "name": "Оставшаяся вода"
             },
             "use_water_interval": {

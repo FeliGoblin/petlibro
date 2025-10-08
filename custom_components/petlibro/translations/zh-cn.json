@@ -136,6 +136,9 @@
                 "name": "当前重量"
             },
             "weight_percent": {
+                "name": "剩余的水 (%)"
+            },
+            "remaining_water": {
                 "name": "剩余的水"
             },
             "use_water_interval": {

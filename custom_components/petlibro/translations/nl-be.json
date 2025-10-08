@@ -136,6 +136,9 @@
                 "name": "Huidig ​​gewicht"
             },
             "weight_percent": {
+                "name": "Resterend water (%)"
+            },
+            "remaining_water": {
                 "name": "Resterend water"
             },
             "use_water_interval": {

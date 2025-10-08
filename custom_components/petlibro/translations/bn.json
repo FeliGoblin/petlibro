@@ -136,6 +136,9 @@
                 "name": "বর্তমান ওজন"
             },
             "weight_percent": {
+                "name": "বাকি জল (%)"
+            },
+            "remaining_water": {
                 "name": "বাকি জল"
             },
             "use_water_interval": {

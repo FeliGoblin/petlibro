@@ -151,6 +151,9 @@
                 "name": "Current Weight"
             },
             "weight_percent": {
+                "name": "Remaining Water (%)"
+            },
+            "remaining_water": {
                 "name": "Remaining Water"
             },
             "use_water_interval": {

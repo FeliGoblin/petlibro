@@ -10,7 +10,7 @@ from typing import Any
 import voluptuous as vol
 
 from homeassistant.config_entries import ConfigEntry, ConfigFlow, ConfigFlowResult, OptionsFlow
-from homeassistant.const import CONF_API_TOKEN, CONF_EMAIL, CONF_PASSWORD, CONF_REGION, Platform
+from homeassistant.const import CONF_API_TOKEN, CONF_EMAIL, CONF_PASSWORD, CONF_REGION
 from homeassistant.core import callback
 from homeassistant.data_entry_flow import section
 from homeassistant.helpers.aiohttp_client import async_get_clientsession

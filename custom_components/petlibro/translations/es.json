@@ -27,19 +27,29 @@
     },
     "options": {
         "abort": {
-            "account_update_success": "Cuenta actualizada",
-            "account_update_nomember": "Datos de miembro no cargados, por favor revise los registros",
-            "account_update_nochanges": "No se cambiaron configuraciones",
-            "account_update_nochanges_update_sensors": "No se cambiaron configuraciones\nEntidades de sensores actualizadas",
+            "no_member_data": "Datos de miembro no cargados, por favor revise los registros",
+            "account_settings_abort": "{account_settings_abort}",
+            "integration_settings_abort": "{integration_settings_abort}",
+            "no_settings_changed": "No se cambiaron configuraciones",
             "error_check_logs": "Error, por favor revise los registros"
         },
         "error": {
             "unknown": "Error inesperado"
         },
         "step": {
-            "init": {
+			"init": {
                 "menu_options": {
+                    "integration_settings": "Configuración de la integración",
                     "account_settings": "Configuración de la cuenta"
+                }
+			},
+            "integration_settings": {
+                "title": "Configuración de la integración",
+                "data": {
+                    "manual_feed_portions": "Establecer alimentación manual por porciones"
+                },
+                "data_description": {
+                    "manual_feed_portions": "Predeterminado: establecer según la unidad seleccionada para comida de mascotas ({uom})."
                 }
             },
             "account_settings": {
@@ -65,6 +75,13 @@
                 }
             }
         }
+    },
+    "common": {
+        "reloading_integration": "La integración se está recargando",
+        "settings_updated": "Configuraciones actualizadas",
+        "no_settings_changed": "No se cambiaron configuraciones",
+        "sensors_updated": "Entidades de sensores actualizadas",
+        "account_updated": "Actualización de cuenta exitosa"
     },
     "selector": {
         "member_gender": {
@@ -297,6 +314,9 @@
             },
             "display_icon": {
                 "name": "Icono en la pantalla"
+            },
+            "manual_feed_quantity_cups": {
+                "name": "Cantidad de alimento manual"
             }
         },
         "text": {

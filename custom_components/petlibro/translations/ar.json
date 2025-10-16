@@ -27,19 +27,29 @@
     },
     "options": {
         "abort": {
-            "account_update_success": "تم تحديث الحساب",
-            "account_update_nomember": "لم يتم تحميل بيانات العضو، يرجى التحقق من السجلات",
-            "account_update_nochanges": "لم يتم تغيير أي إعدادات",
-            "account_update_nochanges_update_sensors": "لم يتم تغيير أي إعدادات\nتم تحديث كيانات المستشعر",
+            "no_member_data": "لم يتم تحميل بيانات العضو، يرجى التحقق من السجلات",
+            "account_settings_abort": "{account_settings_abort}",
+            "integration_settings_abort": "{integration_settings_abort}",
+            "no_settings_changed": "لم يتم تغيير أي إعدادات",
             "error_check_logs": "خطأ، يرجى التحقق من السجلات"
         },
         "error": {
             "unknown": "خطأ غير متوقع"
         },
         "step": {
-            "init": {
+			"init": {
                 "menu_options": {
+                    "integration_settings": "إعدادات التكامل",
                     "account_settings": "إعدادات الحساب"
+                }
+			},
+            "integration_settings": {
+                "title": "إعدادات التكامل",
+                "data": {
+                    "manual_feed_portions": "تعيين كمية التغذية اليدوية حسب الحصص"
+                },
+                "data_description": {
+                    "manual_feed_portions": "الافتراضي: التعيين حسب الوحدة التي اخترتها لطعام الحيوانات الأليفة ({uom})."
                 }
             },
             "account_settings": {
@@ -65,6 +75,13 @@
                 }
             }
         }
+    },
+    "common": {
+        "reloading_integration": "يتم إعادة تحميل التكامل",
+        "settings_updated": "تم تحديث الإعدادات",
+        "no_settings_changed": "لم يتم تغيير أي إعدادات",
+        "sensors_updated": "تم تحديث كيانات المستشعر",
+        "account_updated": "تم تحديث الحساب بنجاح"
     },
     "selector": {
         "member_gender": {
@@ -297,6 +314,9 @@
             },
             "display_icon": {
                 "name": "أيقونة معروضة"
+            },
+            "manual_feed_quantity_cups": {
+                "name": "كمية التغذية اليدوية"
             }
         },
         "text": {

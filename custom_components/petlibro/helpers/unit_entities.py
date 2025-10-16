@@ -7,8 +7,8 @@ from homeassistant.const import Platform
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.exceptions import HomeAssistantError
 from homeassistant.helpers.entity_registry import (
-    async_get as get_entity_registry, 
-    RegistryEntryDisabler, 
+    async_get as get_entity_registry,
+    RegistryEntryDisabler,
     RegistryEntryHider
 )
 
@@ -32,7 +32,7 @@ class Unit_Entities:
     An example of a unit entity is the sensor 'today_feeding_quantity_weight', which syncronises with
     Petlibro Feeder units to display feed quantities in the user's configured feed weight.
     """
-    
+
     def __init__(self, *, hass: HomeAssistant, config_entry: ConfigEntry, hub: PetLibroHub):
         """Initialise the Unit_Entities class."""
         self.hass = hass
@@ -42,9 +42,9 @@ class Unit_Entities:
         self.member = self.hub.member
         self.entity_registry = get_entity_registry(self.hass)
         self._sync_task = None
-        
+
     async def sync_manual_feed_entity_visibility(
-        self, /, feed_unit: Unit | None = UNDEFINED, include_portions: bool = True, 
+        self, /, feed_unit: Unit | None = UNDEFINED, include_portions: bool = True,
     ) -> bool:
         """Enable/disable and hide/unhide manual feed entities based on compatibility.
 
@@ -58,12 +58,12 @@ class Unit_Entities:
 
         numbers = self.hub.manual_feed_unique_ids.get(Platform.NUMBER)
         selects = self.hub.manual_feed_unique_ids.get(Platform.SELECT)
-        
+
         if len(numbers) != len(selects):
-            raise HomeAssistantError(
+            _LOGGER.error(
                 "Not all Number entities have an equivalent Select entity, or vice versa. "
-                f"Please open an issue at {GITHUB}/issues if the problem persists.\n"
-                f"Number entities: {numbers}\nSelect entities: {selects}"
+                "Please open an issue at %s/issues if the problem persists.\n"
+                "Number entities: %s\nSelect entities: %s", GITHUB, numbers, selects
             )
         elif not (numbers and selects):
             # No entities to update
@@ -71,48 +71,48 @@ class Unit_Entities:
 
         feed_unit = self.member.feedUnitType if feed_unit is UNDEFINED else feed_unit
         set_as_portion = self.entry.options.get(MANUAL_FEED_PORTIONS) if include_portions else False
-        
-        def incompatible(platform: Platform) -> bool:     
+
+        def incompatible(platform: Platform) -> bool:
             match platform:
                 case Platform.SELECT: return feed_unit != Unit.CUPS or set_as_portion
                 case Platform.NUMBER: return feed_unit == Unit.CUPS and not set_as_portion
                 case _: raise ValueError(f"Unsupported platform: {platform}")
-        
+
         for platform, unique_ids in self.hub.manual_feed_unique_ids.items():
             entity_ids = []
             not_found = []
-        
+
             for unique_id in unique_ids:
                 if entity_id := self.entity_registry.async_get_entity_id(platform, DOMAIN, unique_id):
                     entity_ids.append(entity_id)
                 else:
                     not_found.append(unique_id)
-            
+
             if not_found:
                 _LOGGER.warning("Manual feed entities not found for %s: %s", platform, not_found)
-                
+
             if not entity_ids:
                 continue
-            
+
             incompat = incompatible(platform)
-            disable = RegistryEntryDisabler.CONFIG_ENTRY if incompat else None
+            disable = RegistryEntryDisabler.INTEGRATION if incompat else None
             hide = RegistryEntryHider.INTEGRATION if incompat else None
-            
+
             action = "Hiding/disabling incompatible" if incompat else "Unhiding/enabling compatible"
             _LOGGER.debug("%s entities for %s: %s", action, platform, entity_ids)
 
-            
+
             for entity_id in entity_ids:
                 self.entity_registry.async_update_entity(entity_id, disabled_by=disable, hidden_by=hide)
-                
+
         return True
-        
+
     @callback
     def schedule_manual_feed_sync(self) -> None:
         """Debounce manual feed entity visibility sync calls to avoid redundant calls."""
         if not self._sync_task or self._sync_task.done():
             self._sync_task = self.hass.async_create_task(self._run_manual_feed_sync())
-            
+
     async def _run_manual_feed_sync(self) -> None:
         """Run the sync_manual_feed_entity_visibility method with default args and reload if needed."""
         reload_needed = await self.sync_manual_feed_entity_visibility()
@@ -123,21 +123,21 @@ class Unit_Entities:
         self, /, new_units: dict[API|str, Unit] = UNDEFINED, update_all_units: bool = False
     ) -> bool:
         """Update all sensor entity units which use Petlibro's feed, weight or water units based on account settings.
-        
+
         Behavior:
         - If `new_units` is UNDEFINED, defaults to all three of the member's current unit types.
         - If `update_all_units` is True, updates all sensor entity units, and will default \
           to the member's current unit type for any not provided in `new_units`.
         - Returns True if the integration needs to be reloaded.
         """
-                
+
         if new_units is UNDEFINED:
             update_all_units = True
             new_units = {}
 
         if not (new_units or update_all_units):
             return False
-        
+
         reload_needed = False
 
         for unit_type, unit_classes in self.hub.unit_sensor_unique_ids.items():
@@ -177,10 +177,10 @@ class Unit_Entities:
                         entity_id, target_unit.symbol, precision,
                     )
                     self.entity_registry.async_update_entity_options(entity_id, Platform.SENSOR, options)
-                        
+
             if (
                 unit_type is API.FEED_UNIT
-                and Unit.CUPS in (unit, self.member.feedUnitType) 
+                and Unit.CUPS in (unit, self.member.feedUnitType)
                 and not self.entry.options.get(MANUAL_FEED_PORTIONS)
             ) or update_all_units:
                 try:

@@ -27,19 +27,29 @@
     },
     "options": {
         "abort": {
-            "account_update_success": "Konto aktualisiert",
-            "account_update_nomember": "Mitgliedsdaten nicht geladen, bitte Protokolle prüfen",
-            "account_update_nochanges": "Es wurden keine Einstellungen geändert",
-            "account_update_nochanges_update_sensors": "Es wurden keine Einstellungen geändert\nSensor-Entitäten aktualisiert",
+            "no_member_data": "Mitgliedsdaten nicht geladen, bitte Protokolle prüfen",
+            "account_settings_abort": "{account_settings_abort}",
+            "integration_settings_abort": "{integration_settings_abort}",
+            "no_settings_changed": "Keine Einstellungen wurden geändert",
             "error_check_logs": "Fehler, bitte Protokolle prüfen"
         },
         "error": {
             "unknown": "Unerwarteter Fehler"
         },
         "step": {
-            "init": {
+			"init": {
                 "menu_options": {
+                    "integration_settings": "Integrationseinstellungen",
                     "account_settings": "Kontoeinstellungen"
+                }
+			},
+            "integration_settings": {
+                "title": "Integrationseinstellungen",
+                "data": {
+                    "manual_feed_portions": "Manuelle Futtermenge nach Portionen festlegen"
+                },
+                "data_description": {
+                    "manual_feed_portions": "Standard: Festgelegt nach der gewählten Einheit für Tierfutter ({uom})."
                 }
             },
             "account_settings": {
@@ -65,6 +75,13 @@
                 }
             }
         }
+    },
+    "common": {
+        "reloading_integration": "Die Integration wird neu geladen",
+        "settings_updated": "Einstellungen aktualisiert",
+        "no_settings_changed": "Keine Einstellungen wurden geändert",
+        "sensors_updated": "Sensor-Entitäten aktualisiert",
+        "account_updated": "Kontoaktualisierung erfolgreich"
     },
     "selector": {
         "member_gender": {
@@ -291,6 +308,9 @@
             },
             "display_icon": {
                 "name": "Symbol auf dem Display"
+            },
+            "manual_feed_quantity_cups": {
+                "name": "Manuelle Futtermenge"
             }
         },
         "text": {

@@ -27,19 +27,29 @@
     },
     "options": {
         "abort": {
-            "account_update_success": "অ্যাকাউন্ট আপডেট হয়েছে",
-            "account_update_nomember": "সদস্য তথ্য লোড করা হয়নি, অনুগ্রহ করে লগ পরীক্ষা করুন",
-            "account_update_nochanges": "কোনও সেটিংস পরিবর্তন করা হয়নি",
-            "account_update_nochanges_update_sensors": "কোনও সেটিংস পরিবর্তন করা হয়নি\nসেন্সর এন্টিটিগুলি আপডেট হয়েছে",
+            "no_member_data": "সদস্য তথ্য লোড করা হয়নি, অনুগ্রহ করে লগ পরীক্ষা করুন",
+            "account_settings_abort": "{account_settings_abort}",
+            "integration_settings_abort": "{integration_settings_abort}",
+            "no_settings_changed": "কোনও সেটিংস পরিবর্তন করা হয়নি",
             "error_check_logs": "ত্রুটি, অনুগ্রহ করে লগ পরীক্ষা করুন"
         },
         "error": {
             "unknown": "অপ্রত্যাশিত ত্রুটি"
         },
         "step": {
-            "init": {
+			"init": {
                 "menu_options": {
+                    "integration_settings": "ইন্টিগ্রেশন সেটিংস",
                     "account_settings": "অ্যাকাউন্ট সেটিংস"
+                }
+			},
+            "integration_settings": {
+                "title": "ইন্টিগ্রেশন সেটিংস",
+                "data": {
+                    "manual_feed_portions": "পরিমাণ অনুযায়ী ম্যানুয়াল ফিড সেট করুন"
+                },
+                "data_description": {
+                    "manual_feed_portions": "ডিফল্ট: আপনার নির্বাচিত পোষা খাবারের এককের দ্বারা নির্ধারণ করুন ({uom})।"
                 }
             },
             "account_settings": {
@@ -65,6 +75,13 @@
                 }
             }
         }
+    },
+    "common": {
+        "reloading_integration": "ইন্টিগ্রেশন পুনরায় লোড হচ্ছে",
+        "settings_updated": "সেটিংস আপডেট হয়েছে",
+        "no_settings_changed": "কোনও সেটিংস পরিবর্তন করা হয়নি",
+        "sensors_updated": "সেন্সর এন্টিটিগুলি আপডেট হয়েছে",
+        "account_updated": "অ্যাকাউন্ট আপডেট সফল হয়েছে"
     },
     "selector": {
         "member_gender": {
@@ -297,6 +314,9 @@
             },
             "display_icon": {
                 "name": "প্রদর্শনে আইকন"
+            },
+            "manual_feed_quantity_cups": {
+                "name": "ম্যানুয়াল খাবারের পরিমাণ"
             }
         },
         "text": {

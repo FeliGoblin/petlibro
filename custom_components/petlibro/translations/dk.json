@@ -27,19 +27,29 @@
     },
     "options": {
         "abort": {
-            "account_update_success": "Konto opdateret",
-            "account_update_nomember": "Medlemsdata ikke indlæst, tjek venligst loggene",
-            "account_update_nochanges": "Ingen indstillinger blev ændret",
-            "account_update_nochanges_update_sensors": "Ingen indstillinger blev ændret\nSensor-entiteter opdateret",
+            "no_member_data": "Medlemsdata ikke indlæst, tjek venligst loggene",
+            "account_settings_abort": "{account_settings_abort}",
+            "integration_settings_abort": "{integration_settings_abort}",
+            "no_settings_changed": "Ingen indstillinger blev ændret",
             "error_check_logs": "Fejl, tjek venligst loggene"
         },
         "error": {
             "unknown": "Uventet fejl"
         },
         "step": {
-            "init": {
+			"init": {
                 "menu_options": {
+                    "integration_settings": "Integrationsindstillinger",
                     "account_settings": "Kontoindstillinger"
+                }
+			},
+            "integration_settings": {
+                "title": "Integrationsindstillinger",
+                "data": {
+                    "manual_feed_portions": "Indstil manuel fodermængde efter portioner"
+                },
+                "data_description": {
+                    "manual_feed_portions": "Standard: Indstil efter den valgte enhed til dyrefoder ({uom})."
                 }
             },
             "account_settings": {
@@ -65,6 +75,13 @@
                 }
             }
         }
+    },
+    "common": {
+        "reloading_integration": "Integrationen genindlæses",
+        "settings_updated": "Indstillinger opdateret",
+        "no_settings_changed": "Ingen indstillinger blev ændret",
+        "sensors_updated": "Sensor-entiteter opdateret",
+        "account_updated": "Konto opdateret med succes"
     },
     "selector": {
         "member_gender": {
@@ -300,6 +317,9 @@
             },
             "display_icon": {
                 "name": "Ikon på Skærmen"
+            },
+            "manual_feed_quantity_cups": {
+                "name": "Manuel fodermængde"
             }
         },
         "text": {

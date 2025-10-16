@@ -27,19 +27,29 @@
     },
     "options": {
         "abort": {
-            "account_update_success": "Compte mis à jour",
-            "account_update_nomember": "Données du membre non chargées, veuillez vérifier les journaux",
-            "account_update_nochanges": "Aucun paramètre n'a été modifié",
-            "account_update_nochanges_update_sensors": "Aucun paramètre n'a été modifié\nEntités de capteurs mises à jour",
+            "no_member_data": "Données du membre non chargées, veuillez vérifier les journaux",
+            "account_settings_abort": "{account_settings_abort}",
+            "integration_settings_abort": "{integration_settings_abort}",
+            "no_settings_changed": "Aucun paramètre n'a été modifié",
             "error_check_logs": "Erreur, veuillez vérifier les journaux"
         },
         "error": {
             "unknown": "Erreur inattendue"
         },
         "step": {
-            "init": {
+			"init": {
                 "menu_options": {
+                    "integration_settings": "Paramètres d’intégration",
                     "account_settings": "Paramètres du compte"
+                }
+			},
+            "integration_settings": {
+                "title": "Paramètres d’intégration",
+                "data": {
+                    "manual_feed_portions": "Définir la quantité de nourriture manuelle par portions"
+                },
+                "data_description": {
+                    "manual_feed_portions": "Par défaut : défini selon l’unité choisie pour la nourriture de l’animal ({uom})."
                 }
             },
             "account_settings": {
@@ -65,6 +75,13 @@
                 }
             }
         }
+    },
+    "common": {
+        "reloading_integration": "L’intégration est en cours de rechargement",
+        "settings_updated": "Paramètres mis à jour",
+        "no_settings_changed": "Aucun paramètre n’a été modifié",
+        "sensors_updated": "Entités de capteurs mises à jour",
+        "account_updated": "Mise à jour du compte réussie"
     },
     "selector": {
         "member_gender": {
@@ -297,6 +314,9 @@
             },
             "display_icon": {
                 "name": "Icône exposée"
+            },
+            "manual_feed_quantity_cups": {
+                "name": "Quantité de nourriture manuelle"
             }
         },
         "text": {

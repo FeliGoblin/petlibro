@@ -27,19 +27,29 @@
     },
     "options": {
         "abort": {
-            "account_update_success": "Account bijgewerkt",
-            "account_update_nomember": "Lidgegevens niet geladen, controleer de logboeken",
-            "account_update_nochanges": "Er zijn geen instellingen gewijzigd",
-            "account_update_nochanges_update_sensors": "Er zijn geen instellingen gewijzigd\nSensor-entiteiten bijgewerkt",
+            "no_member_data": "Lidgegevens niet geladen, controleer de logboeken",
+            "account_settings_abort": "{account_settings_abort}",
+            "integration_settings_abort": "{integration_settings_abort}",
+            "no_settings_changed": "Er zijn geen instellingen gewijzigd",
             "error_check_logs": "Fout, controleer de logboeken"
         },
         "error": {
             "unknown": "Onverwachte fout"
         },
         "step": {
-            "init": {
+			"init": {
                 "menu_options": {
+                    "integration_settings": "Integratie-instellingen",
                     "account_settings": "Accountinstellingen"
+                }
+			},
+            "integration_settings": {
+                "title": "Integratie-instellingen",
+                "data": {
+                    "manual_feed_portions": "Handmatige voerhoeveelheid instellen per portie"
+                },
+                "data_description": {
+                    "manual_feed_portions": "Standaard: ingesteld volgens de gekozen eenheid voor dierenvoer ({uom})."
                 }
             },
             "account_settings": {
@@ -65,6 +75,13 @@
                 }
             }
         }
+    },
+    "common": {
+        "reloading_integration": "De integratie wordt opnieuw geladen",
+        "settings_updated": "Instellingen bijgewerkt",
+        "no_settings_changed": "Er zijn geen instellingen gewijzigd",
+        "sensors_updated": "Sensor-entiteiten bijgewerkt",
+        "account_updated": "Account succesvol bijgewerkt"
     },
     "selector": {
         "member_gender": {
@@ -300,6 +317,9 @@
             },
             "display_icon": {
                 "name": "Symbol op het scherm"
+            },
+            "manual_feed_quantity_cups": {
+                "name": "Handmatige voederhoeveelheid"
             }
         },
         "text": {

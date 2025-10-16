@@ -27,19 +27,29 @@
     },
     "options": {
         "abort": {
-            "account_update_success": "Аккаунт обновлен",
-            "account_update_nomember": "Данные участника не загружены, проверьте логи",
-            "account_update_nochanges": "Настройки не были изменены",
-            "account_update_nochanges_update_sensors": "Настройки не были изменены\nСущности датчиков обновлены",
+            "no_member_data": "Данные участника не загружены, проверьте логи",
+            "account_settings_abort": "{account_settings_abort}",
+            "integration_settings_abort": "{integration_settings_abort}",
+            "no_settings_changed": "Настройки не были изменены",
             "error_check_logs": "Ошибка, пожалуйста, проверьте логи"
         },
         "error": {
             "unknown": "Неожиданная ошибка"
         },
         "step": {
-            "init": {
+			"init": {
                 "menu_options": {
+                    "integration_settings": "Настройки интеграции",
                     "account_settings": "Настройки аккаунта"
+                }
+			},
+            "integration_settings": {
+                "title": "Настройки интеграции",
+                "data": {
+                    "manual_feed_portions": "Задать ручную подачу по порциям"
+                },
+                "data_description": {
+                    "manual_feed_portions": "По умолчанию: устанавливается согласно выбранной единице измерения корма ({uom})."
                 }
             },
             "account_settings": {
@@ -65,6 +75,13 @@
                 }
             }
         }
+    },
+    "common": {
+        "reloading_integration": "Интеграция перезагружается",
+        "settings_updated": "Настройки обновлены",
+        "no_settings_changed": "Настройки не были изменены",
+        "sensors_updated": "Сущности датчиков обновлены",
+        "account_updated": "Аккаунт успешно обновлен"
     },
     "selector": {
         "member_gender": {
@@ -297,6 +314,9 @@
             },
             "display_icon": {
                 "name": "Значок на дисплее"
+            },
+            "manual_feed_quantity_cups": {
+                "name": "Ручное количество корма"
             }
         },
         "text": {

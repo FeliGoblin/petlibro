@@ -27,19 +27,29 @@
     },
     "options": {
         "abort": {
-            "account_update_success": "Conta atualizada",
-            "account_update_nomember": "Dados do membro não carregados, verifique os registros",
-            "account_update_nochanges": "Nenhuma configuração foi alterada",
-            "account_update_nochanges_update_sensors": "Nenhuma configuração foi alterada\nEntidades de sensores atualizadas",
+            "no_member_data": "Dados do membro não carregados, verifique os registros",
+            "account_settings_abort": "{account_settings_abort}",
+            "integration_settings_abort": "{integration_settings_abort}",
+            "no_settings_changed": "Nenhuma configuração foi alterada",
             "error_check_logs": "Erro, verifique os registros"
         },
         "error": {
             "unknown": "Erro inesperado"
         },
         "step": {
-            "init": {
+			"init": {
                 "menu_options": {
+                    "integration_settings": "Configurações da integração",
                     "account_settings": "Configurações da conta"
+                }
+			},
+            "integration_settings": {
+                "title": "Configurações da integração",
+                "data": {
+                    "manual_feed_portions": "Definir quantidade de alimentação manual por porções"
+                },
+                "data_description": {
+                    "manual_feed_portions": "Padrão: definido pela unidade escolhida para a ração do animal ({uom})."
                 }
             },
             "account_settings": {
@@ -65,6 +75,13 @@
                 }
             }
         }
+    },
+    "common": {
+        "reloading_integration": "A integração está sendo recarregada",
+        "settings_updated": "Configurações atualizadas",
+        "no_settings_changed": "Nenhuma configuração foi alterada",
+        "sensors_updated": "Entidades de sensores atualizadas",
+        "account_updated": "Atualização de conta bem-sucedida"
     },
     "selector": {
         "member_gender": {
@@ -297,6 +314,9 @@
             },
             "display_icon": {
                 "name": "Ícone em exibição"
+            },
+            "manual_feed_quantity_cups": {
+                "name": "Quantidade de ração manual"
             }
         },
         "text": {

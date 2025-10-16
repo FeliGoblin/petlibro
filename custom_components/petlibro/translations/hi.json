@@ -27,19 +27,29 @@
     },
     "options": {
         "abort": {
-            "account_update_success": "खाता अपडेट किया गया",
-            "account_update_nomember": "सदस्य डेटा लोड नहीं हुआ, कृपया लॉग जांचें",
-            "account_update_nochanges": "कोई सेटिंग्स नहीं बदली गईं",
-            "account_update_nochanges_update_sensors": "कोई सेटिंग्स नहीं बदली गईं\nसेंसर एंटिटीज़ अपडेट की गईं",
+            "no_member_data": "सदस्य डेटा लोड नहीं हुआ, कृपया लॉग जांचें",
+            "account_settings_abort": "{account_settings_abort}",
+            "integration_settings_abort": "{integration_settings_abort}",
+            "no_settings_changed": "कोई सेटिंग्स नहीं बदली गईं",
             "error_check_logs": "त्रुटि, कृपया लॉग जांचें"
         },
         "error": {
             "unknown": "अप्रत्याशित त्रुटि"
         },
         "step": {
-            "init": {
+			"init": {
                 "menu_options": {
+                    "integration_settings": "इंटीग्रेशन सेटिंग्स",
                     "account_settings": "खाता सेटिंग्स"
+                }
+			},
+            "integration_settings": {
+                "title": "इंटीग्रेशन सेटिंग्स",
+                "data": {
+                    "manual_feed_portions": "पोरशन के अनुसार मैनुअल फीड मात्रा सेट करें"
+                },
+                "data_description": {
+                    "manual_feed_portions": "डिफ़ॉल्ट: आपके द्वारा चुनी गई पालतू भोजन इकाई के अनुसार सेट करें ({uom})।"
                 }
             },
             "account_settings": {
@@ -65,6 +75,13 @@
                 }
             }
         }
+    },
+    "common": {
+        "reloading_integration": "इंटीग्रेशन पुनः लोड किया जा रहा है",
+        "settings_updated": "सेटिंग्स अपडेट की गईं",
+        "no_settings_changed": "कोई सेटिंग्स नहीं बदली गईं",
+        "sensors_updated": "सेंसर एंटिटीज़ अपडेट की गईं",
+        "account_updated": "खाता अपडेट सफल रहा"
     },
     "selector": {
         "member_gender": {
@@ -297,6 +314,9 @@
             },
             "display_icon": {
                 "name": "प्रदर्शन पर आइकन"
+            },
+            "manual_feed_quantity_cups": {
+                "name": "मैनुअल खिलाने की मात्रा"
             }
         },
         "text": {

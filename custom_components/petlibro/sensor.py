@@ -13,7 +13,7 @@ from homeassistant.components.sensor.const import SensorStateClass, SensorDevice
 from homeassistant.components.sensor import SensorEntity, SensorEntityDescription
 from homeassistant.const import UnitOfMass, UnitOfVolume
 from homeassistant.core import HomeAssistant
-from homeassistant.util.unit_conversion import MassConverter, VolumeConverter
+from homeassistant.util.unit_conversion import VolumeConverter
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
 from homeassistant.config_entries import ConfigEntry  # Added ConfigEntry import
 from .hub import PetLibroHub  # Adjust the import path as necessary
@@ -1089,7 +1089,7 @@ DEVICE_SENSOR_MAP: dict[type[Device], list[PetLibroSensorEntityDescription]] = {
             icon="mdi:water",
             native_unit_of_measurement=UnitOfVolume.MILLILITERS,
             suggested_unit_of_measurement_fn=lambda m: m.waterUnitType.symbol,
-            state_class=SensorStateClass.MEASUREMENT,
+            state_class=SensorStateClass.TOTAL,
             device_class=SensorDeviceClass.VOLUME,
             extra_state_attributes_fn=lambda d, m: {
                 unit.symbol: VolumeConverter.convert(d.weight, UnitOfVolume.MILLILITERS, unit.symbol)
@@ -1230,7 +1230,7 @@ DEVICE_SENSOR_MAP: dict[type[Device], list[PetLibroSensorEntityDescription]] = {
             icon="mdi:water",
             native_unit_of_measurement=UnitOfVolume.MILLILITERS,
             suggested_unit_of_measurement_fn=lambda m: m.waterUnitType.symbol,
-            state_class=SensorStateClass.MEASUREMENT,
+            state_class=SensorStateClass.TOTAL,
             device_class=SensorDeviceClass.VOLUME,
             extra_state_attributes_fn=lambda d, m: {
                 unit.symbol: VolumeConverter.convert(d.weight, UnitOfVolume.MILLILITERS, unit.symbol)
@@ -1333,7 +1333,7 @@ DEVICE_SENSOR_MAP: dict[type[Device], list[PetLibroSensorEntityDescription]] = {
             icon="mdi:water",
             native_unit_of_measurement=UnitOfVolume.MILLILITERS,
             suggested_unit_of_measurement_fn=lambda m: m.waterUnitType.symbol,
-            state_class=SensorStateClass.MEASUREMENT,
+            state_class=SensorStateClass.TOTAL,
             device_class=SensorDeviceClass.VOLUME,
             extra_state_attributes_fn=lambda d, m: {
                 unit.symbol: VolumeConverter.convert(d.weight, UnitOfVolume.MILLILITERS, unit.symbol)
@@ -1481,7 +1481,7 @@ DEVICE_SENSOR_MAP: dict[type[Device], list[PetLibroSensorEntityDescription]] = {
             icon="mdi:water",
             native_unit_of_measurement=UnitOfVolume.MILLILITERS,
             suggested_unit_of_measurement_fn=lambda m: m.waterUnitType.symbol,
-            state_class=SensorStateClass.MEASUREMENT,
+            state_class=SensorStateClass.TOTAL,
             device_class=SensorDeviceClass.VOLUME,
             extra_state_attributes_fn=lambda d, m: {
                 unit.symbol: VolumeConverter.convert(d.weight, UnitOfVolume.MILLILITERS, unit.symbol)

@@ -5,8 +5,10 @@ from enum import IntEnum, StrEnum
 from homeassistant.const import CONF_EMAIL, CONF_PASSWORD, UnitOfMass, UnitOfVolume
 
 type _Unit = Unit
+SENTINEL = object()
 
 DOMAIN = "petlibro"
+GITHUB = "https://github.com/jjjonesjr33/petlibro"
 
 # Configuration keys
 CONF_EMAIL = "email"
@@ -85,9 +87,15 @@ class APIKey(StrEnum):
 
 
 class Unit(IntEnum):
-    """Weight, feed, and water units with symbols and conversion."""
+    """Weight, feed, and water units with symbols and conversion.
+    
+    KILOGRAMS, POUNDS, and WATER\_ values can be converted using HA's built-in unit
+    converter, so their 'factor's and 'device_class's likely won't be used much.
+    
+    WATER\_ int values must be different to avoid aliasing. Take care when using .value
+    """
 
-    CUPS = 1, 1/12, "cup", ""
+    CUPS = 1, 1/12, "cups", ""
     OUNCES = 2, 0.35, UnitOfMass.OUNCES, "weight"
     GRAMS = 3, 10, UnitOfMass.GRAMS, "weight"
     MILLILITERS = 4, 20, UnitOfVolume.MILLILITERS, "volume"
@@ -97,11 +105,6 @@ class Unit(IntEnum):
 
     WATER_OUNCES = 2 +6, 0.033814, UnitOfVolume.FLUID_OUNCES, "volume"
     WATER_MILLILITERS = 4 +6, 1, UnitOfVolume.MILLILITERS, "volume"
-    
-    # KILOGRAMS, POUNDS, and WATER_ values can be converted using HA's built-in unit
-    # converter, so their "factor"s and "device_class"s likely won't be used much or at all.
-    
-    # WATER_ int values must be different to avoid aliasing. Take care when using .value
 
     def __new__(cls, value: int, factor: float, symbol: str, device_class: str):
         "Ensures IntEnum functionality while allowing extra attributes."
@@ -165,6 +168,7 @@ DEFAULT_WEIGHT = Unit.POUNDS
 DEFAULT_FEED = Unit.CUPS
 DEFAULT_WATER = Unit.WATER_OUNCES
 MAX_FEED_PORTIONS = 48
+MANUAL_FEED_PORTIONS = "manual_feed_portions"
 VALID_UNIT_TYPES: dict[str, set[Unit]] = {
     APIKey.WEIGHT_UNIT: {Unit.POUNDS, Unit.KILOGRAMS, None},
     APIKey.FEED_UNIT: {Unit.CUPS, Unit.OUNCES, Unit.GRAMS, Unit.MILLILITERS, None},

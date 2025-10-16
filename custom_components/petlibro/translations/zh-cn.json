@@ -27,19 +27,29 @@
     },
     "options": {
         "abort": {
-            "account_update_success": "账户已更新",
-            "account_update_nomember": "未加载成员数据，请检查日志",
-            "account_update_nochanges": "未更改任何设置",
-            "account_update_nochanges_update_sensors": "未更改任何设置\n传感器实体已更新",
+            "no_member_data": "未加载成员数据，请检查日志",
+            "account_settings_abort": "{account_settings_abort}",
+            "integration_settings_abort": "{integration_settings_abort}",
+            "no_settings_changed": "未更改任何设置",
             "error_check_logs": "错误，请检查日志"
         },
         "error": {
             "unknown": "意外错误"
         },
         "step": {
-            "init": {
+			"init": {
                 "menu_options": {
+                    "integration_settings": "集成设置",
                     "account_settings": "账户设置"
+                }
+			},
+            "integration_settings": {
+                "title": "集成设置",
+                "data": {
+                    "manual_feed_portions": "按份量设置手动喂食量"
+                },
+                "data_description": {
+                    "manual_feed_portions": "默认：根据您选择的宠物饲料单位设置 ({uom})。"
                 }
             },
             "account_settings": {
@@ -65,6 +75,13 @@
                 }
             }
         }
+    },
+    "common": {
+        "reloading_integration": "正在重新加载集成",
+        "settings_updated": "设置已更新",
+        "no_settings_changed": "未更改任何设置",
+        "sensors_updated": "传感器实体已更新",
+        "account_updated": "账户更新成功"
     },
     "selector": {
         "member_gender": {
@@ -297,6 +314,9 @@
             },
             "display_icon": {
                 "name": "显示的图标"
+            },
+            "manual_feed_quantity_cups": {
+                "name": "手动喂食量"
             }
         },
         "text": {

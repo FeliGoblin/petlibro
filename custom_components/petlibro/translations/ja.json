@@ -27,19 +27,29 @@
     },
     "options": {
         "abort": {
-            "account_update_success": "アカウントを更新しました",
-            "account_update_nomember": "メンバーデータが読み込まれていません。ログを確認してください",
-            "account_update_nochanges": "設定は変更されませんでした",
-            "account_update_nochanges_update_sensors": "設定は変更されませんでした\nセンサーエンティティが更新されました",
+            "no_member_data": "メンバーデータが読み込まれていません。ログを確認してください",
+            "account_settings_abort": "{account_settings_abort}",
+            "integration_settings_abort": "{integration_settings_abort}",
+            "no_settings_changed": "設定は変更されませんでした",
             "error_check_logs": "エラー、ログを確認してください"
         },
         "error": {
             "unknown": "予期しないエラー"
         },
         "step": {
-            "init": {
+			"init": {
                 "menu_options": {
+                    "integration_settings": "統合設定",
                     "account_settings": "アカウント設定"
+                }
+			},
+            "integration_settings": {
+                "title": "統合設定",
+                "data": {
+                    "manual_feed_portions": "手動給餌量をポーション単位で設定"
+                },
+                "data_description": {
+                    "manual_feed_portions": "デフォルト: ペットフードの選択単位に基づいて設定します ({uom})。"
                 }
             },
             "account_settings": {
@@ -65,6 +75,13 @@
                 }
             }
         }
+    },
+    "common": {
+        "reloading_integration": "統合を再読み込みしています",
+        "settings_updated": "設定が更新されました",
+        "no_settings_changed": "設定は変更されませんでした",
+        "sensors_updated": "センサーエンティティが更新されました",
+        "account_updated": "アカウントの更新に成功しました"
     },
     "selector": {
         "member_gender": {
@@ -297,6 +314,9 @@
             },
             "display_icon": {
                 "name": "展示されているアイコン"
+            },
+            "manual_feed_quantity_cups": {
+                "name": "手動給餌量"
             }
         },
         "text": {

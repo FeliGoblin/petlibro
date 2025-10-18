@@ -181,7 +181,7 @@ class PetlibroOptionsFlow(OptionsFlow):
 
         _LOGGER.debug("Starting Petlibro options flow.")
         self.translations = await async_get_translations(
-            self.hass, self.hass.config.language, "options")
+            self.hass, self.hass.config.language, "common")
         self.entry = self.config_entry
         self.hub = self.hass.data[DOMAIN][self.handler]
         self.api = self.hub.api

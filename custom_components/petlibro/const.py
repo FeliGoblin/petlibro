@@ -89,10 +89,10 @@ class APIKey(StrEnum):
 class Unit(IntEnum):
     """Weight, feed, and water units with symbols and conversion.
     
-    KILOGRAMS, POUNDS, and WATER\_ values can be converted using HA's built-in unit
+    KILOGRAMS, POUNDS, and WATER values can be converted using HA's built-in unit
     converter, so their 'factor's and 'device_class's likely won't be used much.
     
-    WATER\_ int values must be different to avoid aliasing. Take care when using .value
+    WATER int values must be different to avoid aliasing. Take care when using .value
     """
 
     CUPS = 1, 1/12, "cups", ""

@@ -56,6 +56,7 @@ class PetLibroNumberEntityDescription(NumberEntityDescription, PetLibroEntityDes
     device_class: Optional[NumberDeviceClass] = None
     entity_registry_visible_default_fn: Callable[[PetLibroNumberEntity], bool | None] = lambda _: None
     entity_registry_enabled_default_fn: Callable[[PetLibroNumberEntity], bool | None] = lambda _: None
+    available_fn: Callable[[PetLibroNumberEntity], bool | None] = lambda _: None
     petlibro_unit: APIKey | str | None = None
 
 class PetLibroNumberEntity(PetLibroEntity[_DeviceT], NumberEntity):
@@ -65,7 +66,7 @@ class PetLibroNumberEntity(PetLibroEntity[_DeviceT], NumberEntity):
     def __init__(self, device, hub, description):
         """Initialize the number."""
         super().__init__(device, hub, description)
-        
+
         if (unit_type := self.entity_description.petlibro_unit) and unit_type == APIKey.FEED_UNIT:
             self.hub.manual_feed_unique_ids[Platform.NUMBER].append(self._attr_unique_id)
 
@@ -125,31 +126,38 @@ class PetLibroNumberEntity(PetLibroEntity[_DeviceT], NumberEntity):
         if (native_step := self.entity_description.native_step_fn(self)) is not None:
             return native_step
         return super().native_step
-    
+
+    @property
+    def available(self) -> bool:
+        """Return True if entity is available."""
+        if (available := self.entity_description.available_fn(self)) is not None:
+            return available
+        return super().available
+
     @property
     def entity_registry_visible_default(self) -> bool:
         """Return if the entity should be visible when first added."""
         if (visible_default := self.entity_description.entity_registry_visible_default_fn(self)) is not None:
             return visible_default
         return super().entity_registry_visible_default
-    
+
     @property
     def entity_registry_enabled_default(self) -> bool:
         """Return if the entity should be enabled when first added."""
         if (enabled_default := self.entity_description.entity_registry_enabled_default_fn(self)) is not None:
             return enabled_default
         return super().entity_registry_enabled_default
-    
+
     @property
     def portions_enabled(self) -> bool:
-        """Return True if portions are enabled for setting manual feed."""        
+        """Return True if portions are enabled for setting manual feed."""
         return self.hub.entry.options.get(MANUAL_FEED_PORTIONS, False)
-        
+
     @property
     def enable_for_manual_feed(self) -> bool:
-        """Return True if the platform should be enabled for setting manual feed."""        
+        """Return True if the platform should be enabled for setting manual feed."""
         return self.member.feedUnitType is not Unit.CUPS or self.portions_enabled
-    
+
     @callback
     def _handle_coordinator_update(self) -> None:
         """Handle updated data from the coordinator."""
@@ -161,7 +169,7 @@ class PetLibroNumberEntity(PetLibroEntity[_DeviceT], NumberEntity):
 
         if self.enabled:
             super()._handle_coordinator_update()
-    
+
 
 DEVICE_NUMBER_MAP: dict[type[Device], list[PetLibroNumberEntityDescription]] = {
     Feeder: [],
@@ -173,16 +181,17 @@ DEVICE_NUMBER_MAP: dict[type[Device], list[PetLibroNumberEntityDescription]] = {
             icon="mdi:scale",
             mode=NumberMode.SLIDER,
             native_unit_of_measurement_fn=lambda s: s.member.feedUnitType.symbol if not s.portions_enabled else "portions",
-            native_max_value_fn=lambda s: Unit.round(s.member.feedUnitType.factor * MAX_FEED_PORTIONS, s.member.feedUnitType) 
+            native_max_value_fn=lambda s: Unit.round(s.member.feedUnitType.factor * MAX_FEED_PORTIONS, s.member.feedUnitType)
                 if not s.portions_enabled else MAX_FEED_PORTIONS,
             native_min_value_fn=lambda s: round(s.member.feedUnitType.factor, 16) if not s.portions_enabled else 1,
             native_step_fn=lambda s: s.member.feedUnitType.factor if not s.portions_enabled else 1,
-            method=lambda s, d, v: d.set_manual_feed_quantity(Unit.convert_feed(v, s.member.feedUnitType, None) 
+            method=lambda s, d, v: d.set_manual_feed_quantity(Unit.convert_feed(v, s.member.feedUnitType, None)
                 if not s.portions_enabled else v),
-            value_fn=lambda s, d: Unit.convert_feed(d.manual_feed_quantity, None, s.member.feedUnitType, True) 
+            value_fn=lambda s, d: Unit.convert_feed(d.manual_feed_quantity, None, s.member.feedUnitType, True)
                 if not s.portions_enabled else d.manual_feed_quantity,
             entity_registry_visible_default_fn=lambda self: self.enable_for_manual_feed,
             entity_registry_enabled_default_fn=lambda self: self.enable_for_manual_feed,
+            available_fn=lambda self: self.enable_for_manual_feed,
             petlibro_unit=APIKey.FEED_UNIT,
         ),
     ],
@@ -194,16 +203,17 @@ DEVICE_NUMBER_MAP: dict[type[Device], list[PetLibroNumberEntityDescription]] = {
             icon="mdi:scale",
             mode=NumberMode.SLIDER,
             native_unit_of_measurement_fn=lambda s: s.member.feedUnitType.symbol if not s.portions_enabled else "portions",
-            native_max_value_fn=lambda s: Unit.round(s.member.feedUnitType.factor * MAX_FEED_PORTIONS, s.member.feedUnitType) 
+            native_max_value_fn=lambda s: Unit.round(s.member.feedUnitType.factor * MAX_FEED_PORTIONS, s.member.feedUnitType)
                 if not s.portions_enabled else MAX_FEED_PORTIONS,
             native_min_value_fn=lambda s: round(s.member.feedUnitType.factor, 16) if not s.portions_enabled else 1,
             native_step_fn=lambda s: s.member.feedUnitType.factor if not s.portions_enabled else 1,
-            method=lambda s, d, v: d.set_manual_feed_quantity(Unit.convert_feed(v, s.member.feedUnitType, None) 
+            method=lambda s, d, v: d.set_manual_feed_quantity(Unit.convert_feed(v, s.member.feedUnitType, None)
                 if not s.portions_enabled else v),
-            value_fn=lambda s, d: Unit.convert_feed(d.manual_feed_quantity, None, s.member.feedUnitType, True) 
+            value_fn=lambda s, d: Unit.convert_feed(d.manual_feed_quantity, None, s.member.feedUnitType, True)
                 if not s.portions_enabled else d.manual_feed_quantity,
             entity_registry_visible_default_fn=lambda self: self.enable_for_manual_feed,
             entity_registry_enabled_default_fn=lambda self: self.enable_for_manual_feed,
+            available_fn=lambda self: self.enable_for_manual_feed,
             petlibro_unit=APIKey.FEED_UNIT,
         ),
         PetLibroNumberEntityDescription[GranarySmartFeeder](
@@ -228,16 +238,17 @@ DEVICE_NUMBER_MAP: dict[type[Device], list[PetLibroNumberEntityDescription]] = {
             icon="mdi:scale",
             mode=NumberMode.SLIDER,
             native_unit_of_measurement_fn=lambda s: s.member.feedUnitType.symbol if not s.portions_enabled else "portions",
-            native_max_value_fn=lambda s: Unit.round(s.member.feedUnitType.factor * MAX_FEED_PORTIONS, s.member.feedUnitType) 
+            native_max_value_fn=lambda s: Unit.round(s.member.feedUnitType.factor * MAX_FEED_PORTIONS, s.member.feedUnitType)
                 if not s.portions_enabled else MAX_FEED_PORTIONS,
             native_min_value_fn=lambda s: round(s.member.feedUnitType.factor, 16) if not s.portions_enabled else 1,
             native_step_fn=lambda s: s.member.feedUnitType.factor if not s.portions_enabled else 1,
-            method=lambda s, d, v: d.set_manual_feed_quantity(Unit.convert_feed(v, s.member.feedUnitType, None) 
+            method=lambda s, d, v: d.set_manual_feed_quantity(Unit.convert_feed(v, s.member.feedUnitType, None)
                 if not s.portions_enabled else v),
-            value_fn=lambda s, d: Unit.convert_feed(d.manual_feed_quantity, None, s.member.feedUnitType, True) 
+            value_fn=lambda s, d: Unit.convert_feed(d.manual_feed_quantity, None, s.member.feedUnitType, True)
                 if not s.portions_enabled else d.manual_feed_quantity,
             entity_registry_visible_default_fn=lambda self: self.enable_for_manual_feed,
             entity_registry_enabled_default_fn=lambda self: self.enable_for_manual_feed,
+            available_fn=lambda self: self.enable_for_manual_feed,
             petlibro_unit=APIKey.FEED_UNIT,
         ),
     ],
@@ -286,16 +297,17 @@ DEVICE_NUMBER_MAP: dict[type[Device], list[PetLibroNumberEntityDescription]] = {
             icon="mdi:scale",
             mode=NumberMode.SLIDER,
             native_unit_of_measurement_fn=lambda s: s.member.feedUnitType.symbol if not s.portions_enabled else "portions",
-            native_max_value_fn=lambda s: Unit.round(s.member.feedUnitType.factor * MAX_FEED_PORTIONS, s.member.feedUnitType) 
+            native_max_value_fn=lambda s: Unit.round(s.member.feedUnitType.factor * MAX_FEED_PORTIONS, s.member.feedUnitType)
                 if not s.portions_enabled else MAX_FEED_PORTIONS,
             native_min_value_fn=lambda s: round(s.member.feedUnitType.factor, 16) if not s.portions_enabled else 1,
             native_step_fn=lambda s: s.member.feedUnitType.factor if not s.portions_enabled else 1,
-            method=lambda s, d, v: d.set_manual_feed_quantity(Unit.convert_feed(v, s.member.feedUnitType, None) 
+            method=lambda s, d, v: d.set_manual_feed_quantity(Unit.convert_feed(v, s.member.feedUnitType, None)
                 if not s.portions_enabled else v),
-            value_fn=lambda s, d: Unit.convert_feed(d.manual_feed_quantity, None, s.member.feedUnitType, True) 
+            value_fn=lambda s, d: Unit.convert_feed(d.manual_feed_quantity, None, s.member.feedUnitType, True)
                 if not s.portions_enabled else d.manual_feed_quantity,
             entity_registry_visible_default_fn=lambda self: self.enable_for_manual_feed,
             entity_registry_enabled_default_fn=lambda self: self.enable_for_manual_feed,
+            available_fn=lambda self: self.enable_for_manual_feed,
             petlibro_unit=APIKey.FEED_UNIT,
         ),
     ],
@@ -308,16 +320,17 @@ DEVICE_NUMBER_MAP: dict[type[Device], list[PetLibroNumberEntityDescription]] = {
             icon="mdi:scale",
             mode=NumberMode.SLIDER,
             native_unit_of_measurement_fn=lambda s: s.member.feedUnitType.symbol if not s.portions_enabled else "portions",
-            native_max_value_fn=lambda s: Unit.round(s.member.feedUnitType.factor * MAX_FEED_PORTIONS, s.member.feedUnitType) 
+            native_max_value_fn=lambda s: Unit.round(s.member.feedUnitType.factor * MAX_FEED_PORTIONS, s.member.feedUnitType)
                 if not s.portions_enabled else MAX_FEED_PORTIONS,
             native_min_value_fn=lambda s: round(s.member.feedUnitType.factor, 16) if not s.portions_enabled else 1,
             native_step_fn=lambda s: s.member.feedUnitType.factor if not s.portions_enabled else 1,
-            method=lambda s, d, v: d.set_manual_feed_quantity(Unit.convert_feed(v, s.member.feedUnitType, None) 
+            method=lambda s, d, v: d.set_manual_feed_quantity(Unit.convert_feed(v, s.member.feedUnitType, None)
                 if not s.portions_enabled else v),
-            value_fn=lambda s, d: Unit.convert_feed(d.manual_feed_quantity, None, s.member.feedUnitType, True) 
+            value_fn=lambda s, d: Unit.convert_feed(d.manual_feed_quantity, None, s.member.feedUnitType, True)
                 if not s.portions_enabled else d.manual_feed_quantity,
             entity_registry_visible_default_fn=lambda self: self.enable_for_manual_feed,
             entity_registry_enabled_default_fn=lambda self: self.enable_for_manual_feed,
+            available_fn=lambda self: self.enable_for_manual_feed,
             petlibro_unit=APIKey.FEED_UNIT,
         ),
         PetLibroNumberEntityDescription[SpaceSmartFeeder](

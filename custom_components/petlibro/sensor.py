@@ -195,20 +195,34 @@ class PetLibroSensorEntity(PetLibroEntity[_DeviceT], SensorEntity):
     @property
     def extra_state_attributes(self):
         """Return entity specific state attributes."""
+        
         if self.entity_description.key == "feeding_plan_state":
             plans = self.device.feeding_plan_today_data.get("plans", [])
-
+            unit = self.member.feedUnitType
+            weight = unit if unit in (Unit.GRAMS, Unit.OUNCES) else Unit.GRAMS
+            volume = unit if unit in (Unit.MILLILITERS, Unit.CUPS) else Unit.MILLILITERS
             return {
-                f"plan_{plan['index']}": {
+                self.device.feeding_plan_data.get(str(plan["planId"]), {}).get("label") or f"plan_{plan['index']}": {
                     "time": plan["time"],
-                    "amount": f"{Unit.convert_feed(plan['grainNum'], None, 
-                    self.member.feedUnitType, True)} {self.member.feedUnitType.symbol}",
+                    "amount (weight)": f"{Unit.convert_feed(plan['grainNum'], None, weight, True)} {weight.symbol}",
+                    "amount (volume)": f"{Unit.convert_feed(plan['grainNum'], None, volume, True)} {volume.symbol}",
                     "state": self._format_state(plan["state"]),
                     "repeat": plan["repeat"],
                     "planID": plan["planId"]
                 }
                 for plan in plans
             }
+            
+        if self.entity_description.key == "next_feed_time":
+            next_feed = self.device.get_next_feed
+            next_feed_data = self.device.feeding_plan_data.get(str(next_feed.get("id")), {})
+            
+            if next_feed_data:
+                return {
+                    "label": next_feed_data.get("label"),
+                    "id": next_feed_data.get("id"),
+                    "meal_call": next_feed_data.get("enableAudio"),
+                }
             
         if (extra_state_attributes := self.entity_description.extra_state_attributes_fn(
             self.device, self.member
@@ -347,6 +361,44 @@ DEVICE_SENSOR_MAP: dict[type[Device], list[PetLibroSensorEntityDescription]] = {
             state_class=SensorStateClass.TOTAL,
             extra_state_attributes_fn=lambda d, m: {"portion": d.last_feed_quantity}|{
                 unit.symbol: Unit.convert_feed(d.last_feed_quantity, None, unit, True) 
+                for unit in VALID_UNIT_TYPES[API.FEED_UNIT] if unit
+            },
+            petlibro_unit=API.FEED_UNIT
+        ),
+        PetLibroSensorEntityDescription[AirSmartFeeder](
+            key="next_feed_time",
+            translation_key="next_feed_time",
+            icon="mdi:calendar-arrow-right",
+            name="Next Feed Time",
+            device_class=SensorDeviceClass.TIMESTAMP,
+        ),
+        PetLibroSensorEntityDescription[AirSmartFeeder](
+            key="next_feed_quantity_weight",
+            translation_key="next_feed_quantity_weight",
+            name="Next Feed Quantity (Weight)",
+            icon="mdi:calendar-arrow-right",
+            native_unit_of_measurement=UnitOfMass.GRAMS,
+            suggested_unit_of_measurement_fn=lambda m: getattr(UnitOfMass, m.feedUnitType.name, None),
+            value_fn=lambda d,m: Unit.convert_feed(d.next_feed_quantity, None, Unit.GRAMS, True),
+            device_class=SensorDeviceClass.WEIGHT,
+            state_class=SensorStateClass.MEASUREMENT,
+            extra_state_attributes_fn=lambda d, m: {"portion": d.next_feed_quantity}|{
+                unit.symbol: Unit.convert_feed(d.next_feed_quantity, None, unit, True) 
+                for unit in VALID_UNIT_TYPES[API.FEED_UNIT] if unit
+            },
+            petlibro_unit=API.FEED_UNIT
+        ),
+        PetLibroSensorEntityDescription[AirSmartFeeder](
+            key="next_feed_quantity_volume",
+            translation_key="next_feed_quantity_volume",
+            name="Next Feed Quantity (Volume)",
+            icon="mdi:calendar-arrow-right",
+            native_unit_of_measurement=UnitOfVolume.MILLILITERS,
+            value_fn=lambda d,m: Unit.convert_feed(d.next_feed_quantity, None, Unit.MILLILITERS, True),
+            device_class=SensorDeviceClass.VOLUME,
+            state_class=SensorStateClass.TOTAL,
+            extra_state_attributes_fn=lambda d, m: {"portion": d.next_feed_quantity}|{
+                unit.symbol: Unit.convert_feed(d.next_feed_quantity, None, unit, True) 
                 for unit in VALID_UNIT_TYPES[API.FEED_UNIT] if unit
             },
             petlibro_unit=API.FEED_UNIT
@@ -492,6 +544,44 @@ DEVICE_SENSOR_MAP: dict[type[Device], list[PetLibroSensorEntityDescription]] = {
             petlibro_unit=API.FEED_UNIT
         ),
         PetLibroSensorEntityDescription[GranarySmartFeeder](
+            key="next_feed_time",
+            translation_key="next_feed_time",
+            icon="mdi:calendar-arrow-right",
+            name="Next Feed Time",
+            device_class=SensorDeviceClass.TIMESTAMP,
+        ),
+        PetLibroSensorEntityDescription[GranarySmartFeeder](
+            key="next_feed_quantity_weight",
+            translation_key="next_feed_quantity_weight",
+            name="Next Feed Quantity (Weight)",
+            icon="mdi:calendar-arrow-right",
+            native_unit_of_measurement=UnitOfMass.GRAMS,
+            suggested_unit_of_measurement_fn=lambda m: getattr(UnitOfMass, m.feedUnitType.name, None),
+            value_fn=lambda d,m: Unit.convert_feed(d.next_feed_quantity, None, Unit.GRAMS, True),
+            device_class=SensorDeviceClass.WEIGHT,
+            state_class=SensorStateClass.MEASUREMENT,
+            extra_state_attributes_fn=lambda d, m: {"portion": d.next_feed_quantity}|{
+                unit.symbol: Unit.convert_feed(d.next_feed_quantity, None, unit, True) 
+                for unit in VALID_UNIT_TYPES[API.FEED_UNIT] if unit
+            },
+            petlibro_unit=API.FEED_UNIT
+        ),
+        PetLibroSensorEntityDescription[GranarySmartFeeder](
+            key="next_feed_quantity_volume",
+            translation_key="next_feed_quantity_volume",
+            name="Next Feed Quantity (Volume)",
+            icon="mdi:calendar-arrow-right",
+            native_unit_of_measurement=UnitOfVolume.MILLILITERS,
+            value_fn=lambda d,m: Unit.convert_feed(d.next_feed_quantity, None, Unit.MILLILITERS, True),
+            device_class=SensorDeviceClass.VOLUME,
+            state_class=SensorStateClass.TOTAL,
+            extra_state_attributes_fn=lambda d, m: {"portion": d.next_feed_quantity}|{
+                unit.symbol: Unit.convert_feed(d.next_feed_quantity, None, unit, True) 
+                for unit in VALID_UNIT_TYPES[API.FEED_UNIT] if unit
+            },
+            petlibro_unit=API.FEED_UNIT
+        ),
+        PetLibroSensorEntityDescription[GranarySmartFeeder](
             key="child_lock_switch",
             translation_key="child_lock_switch",
             icon="mdi:lock",
@@ -627,6 +717,44 @@ DEVICE_SENSOR_MAP: dict[type[Device], list[PetLibroSensorEntityDescription]] = {
             state_class=SensorStateClass.TOTAL,
             extra_state_attributes_fn=lambda d, m: {"portion": d.last_feed_quantity}|{
                 unit.symbol: Unit.convert_feed(d.last_feed_quantity, None, unit, True) 
+                for unit in VALID_UNIT_TYPES[API.FEED_UNIT] if unit
+            },
+            petlibro_unit=API.FEED_UNIT
+        ),
+        PetLibroSensorEntityDescription[GranarySmartCameraFeeder](
+            key="next_feed_time",
+            translation_key="next_feed_time",
+            icon="mdi:calendar-arrow-right",
+            name="Next Feed Time",
+            device_class=SensorDeviceClass.TIMESTAMP,
+        ),
+        PetLibroSensorEntityDescription[GranarySmartCameraFeeder](
+            key="next_feed_quantity_weight",
+            translation_key="next_feed_quantity_weight",
+            name="Next Feed Quantity (Weight)",
+            icon="mdi:calendar-arrow-right",
+            native_unit_of_measurement=UnitOfMass.GRAMS,
+            suggested_unit_of_measurement_fn=lambda m: getattr(UnitOfMass, m.feedUnitType.name, None),
+            value_fn=lambda d,m: Unit.convert_feed(d.next_feed_quantity, None, Unit.GRAMS, True),
+            device_class=SensorDeviceClass.WEIGHT,
+            state_class=SensorStateClass.MEASUREMENT,
+            extra_state_attributes_fn=lambda d, m: {"portion": d.next_feed_quantity}|{
+                unit.symbol: Unit.convert_feed(d.next_feed_quantity, None, unit, True) 
+                for unit in VALID_UNIT_TYPES[API.FEED_UNIT] if unit
+            },
+            petlibro_unit=API.FEED_UNIT
+        ),
+        PetLibroSensorEntityDescription[GranarySmartCameraFeeder](
+            key="next_feed_quantity_volume",
+            translation_key="next_feed_quantity_volume",
+            name="Next Feed Quantity (Volume)",
+            icon="mdi:calendar-arrow-right",
+            native_unit_of_measurement=UnitOfVolume.MILLILITERS,
+            value_fn=lambda d,m: Unit.convert_feed(d.next_feed_quantity, None, Unit.MILLILITERS, True),
+            device_class=SensorDeviceClass.VOLUME,
+            state_class=SensorStateClass.TOTAL,
+            extra_state_attributes_fn=lambda d, m: {"portion": d.next_feed_quantity}|{
+                unit.symbol: Unit.convert_feed(d.next_feed_quantity, None, unit, True) 
                 for unit in VALID_UNIT_TYPES[API.FEED_UNIT] if unit
             },
             petlibro_unit=API.FEED_UNIT
@@ -816,6 +944,44 @@ DEVICE_SENSOR_MAP: dict[type[Device], list[PetLibroSensorEntityDescription]] = {
             state_class=SensorStateClass.TOTAL,
             extra_state_attributes_fn=lambda d, m: {"portion": d.last_feed_quantity}|{
                 unit.symbol: Unit.convert_feed(d.last_feed_quantity, None, unit, True) 
+                for unit in VALID_UNIT_TYPES[API.FEED_UNIT] if unit
+            },
+            petlibro_unit=API.FEED_UNIT
+        ),
+        PetLibroSensorEntityDescription[OneRFIDSmartFeeder](
+            key="next_feed_time",
+            translation_key="next_feed_time",
+            icon="mdi:calendar-arrow-right",
+            name="Next Feed Time",
+            device_class=SensorDeviceClass.TIMESTAMP,
+        ),
+        PetLibroSensorEntityDescription[OneRFIDSmartFeeder](
+            key="next_feed_quantity_weight",
+            translation_key="next_feed_quantity_weight",
+            name="Next Feed Quantity (Weight)",
+            icon="mdi:calendar-arrow-right",
+            native_unit_of_measurement=UnitOfMass.GRAMS,
+            suggested_unit_of_measurement_fn=lambda m: getattr(UnitOfMass, m.feedUnitType.name, None),
+            value_fn=lambda d,m: Unit.convert_feed(d.next_feed_quantity, None, Unit.GRAMS, True),
+            device_class=SensorDeviceClass.WEIGHT,
+            state_class=SensorStateClass.MEASUREMENT,
+            extra_state_attributes_fn=lambda d, m: {"portion": d.next_feed_quantity}|{
+                unit.symbol: Unit.convert_feed(d.next_feed_quantity, None, unit, True) 
+                for unit in VALID_UNIT_TYPES[API.FEED_UNIT] if unit
+            },
+            petlibro_unit=API.FEED_UNIT
+        ),
+        PetLibroSensorEntityDescription[OneRFIDSmartFeeder](
+            key="next_feed_quantity_volume",
+            translation_key="next_feed_quantity_volume",
+            name="Next Feed Quantity (Volume)",
+            icon="mdi:calendar-arrow-right",
+            native_unit_of_measurement=UnitOfVolume.MILLILITERS,
+            value_fn=lambda d,m: Unit.convert_feed(d.next_feed_quantity, None, Unit.MILLILITERS, True),
+            device_class=SensorDeviceClass.VOLUME,
+            state_class=SensorStateClass.TOTAL,
+            extra_state_attributes_fn=lambda d, m: {"portion": d.next_feed_quantity}|{
+                unit.symbol: Unit.convert_feed(d.next_feed_quantity, None, unit, True) 
                 for unit in VALID_UNIT_TYPES[API.FEED_UNIT] if unit
             },
             petlibro_unit=API.FEED_UNIT
@@ -1030,6 +1196,44 @@ DEVICE_SENSOR_MAP: dict[type[Device], list[PetLibroSensorEntityDescription]] = {
             state_class=SensorStateClass.TOTAL,
             extra_state_attributes_fn=lambda d, m: {"portion": d.last_feed_quantity}|{
                 unit.symbol: Unit.convert_feed(d.last_feed_quantity, None, unit, True) 
+                for unit in VALID_UNIT_TYPES[API.FEED_UNIT] if unit
+            },
+            petlibro_unit=API.FEED_UNIT
+        ),
+        PetLibroSensorEntityDescription[SpaceSmartFeeder](
+            key="next_feed_time",
+            translation_key="next_feed_time",
+            icon="mdi:calendar-arrow-right",
+            name="Next Feed Time",
+            device_class=SensorDeviceClass.TIMESTAMP,
+        ),
+        PetLibroSensorEntityDescription[SpaceSmartFeeder](
+            key="next_feed_quantity_weight",
+            translation_key="next_feed_quantity_weight",
+            name="Next Feed Quantity (Weight)",
+            icon="mdi:calendar-arrow-right",
+            native_unit_of_measurement=UnitOfMass.GRAMS,
+            suggested_unit_of_measurement_fn=lambda m: getattr(UnitOfMass, m.feedUnitType.name, None),
+            value_fn=lambda d,m: Unit.convert_feed(d.next_feed_quantity, None, Unit.GRAMS, True),
+            device_class=SensorDeviceClass.WEIGHT,
+            state_class=SensorStateClass.MEASUREMENT,
+            extra_state_attributes_fn=lambda d, m: {"portion": d.next_feed_quantity}|{
+                unit.symbol: Unit.convert_feed(d.next_feed_quantity, None, unit, True) 
+                for unit in VALID_UNIT_TYPES[API.FEED_UNIT] if unit
+            },
+            petlibro_unit=API.FEED_UNIT
+        ),
+        PetLibroSensorEntityDescription[SpaceSmartFeeder](
+            key="next_feed_quantity_volume",
+            translation_key="next_feed_quantity_volume",
+            name="Next Feed Quantity (Volume)",
+            icon="mdi:calendar-arrow-right",
+            native_unit_of_measurement=UnitOfVolume.MILLILITERS,
+            value_fn=lambda d,m: Unit.convert_feed(d.next_feed_quantity, None, Unit.MILLILITERS, True),
+            device_class=SensorDeviceClass.VOLUME,
+            state_class=SensorStateClass.TOTAL,
+            extra_state_attributes_fn=lambda d, m: {"portion": d.next_feed_quantity}|{
+                unit.symbol: Unit.convert_feed(d.next_feed_quantity, None, unit, True) 
                 for unit in VALID_UNIT_TYPES[API.FEED_UNIT] if unit
             },
             petlibro_unit=API.FEED_UNIT

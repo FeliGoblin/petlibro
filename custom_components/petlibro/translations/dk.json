@@ -69,6 +69,7 @@
                             "update_all_units": "Opdater måleenheden for alle Petlibro-enhedssensor-entiteter"
                         },
                         "data_description": {
+                            "feedUnitType": "Bemærk venligst, at 'kopper' ikke understøttes for sensor-entiteter.",
                             "update_all_units": "Som standard opdaterer en ændring af enheden her kun sensor-entiteter af den type."
                         }
                     }

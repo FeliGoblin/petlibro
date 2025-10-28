@@ -69,6 +69,7 @@
                             "update_all_units": "Mettre à jour l'unité de mesure de toutes les entités de capteurs d’unité Petlibro"
                         },
                         "data_description": {
+                            "feedUnitType": "Veuillez noter que les 'tasses' ne sont pas prises en charge pour les entités de capteurs.",
                             "update_all_units": "Par défaut, changer une unité ici met seulement à jour les entités de capteurs de ce type."
                         }
                     }

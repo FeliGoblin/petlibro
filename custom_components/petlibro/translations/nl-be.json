@@ -69,6 +69,7 @@
                             "update_all_units": "Werk de meeteenheid van alle Petlibro-eenheidssensor-entiteiten bij"
                         },
                         "data_description": {
+                            "feedUnitType": "Let op: 'kopjes' worden niet ondersteund voor sensor-entiteiten.",
                             "update_all_units": "Standaard werkt een wijziging van een eenheid hier alleen sensoren van dat type bij."
                         }
                     }

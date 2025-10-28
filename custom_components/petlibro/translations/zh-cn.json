@@ -69,6 +69,7 @@
                             "update_all_units": "更新所有 Petlibro 单位传感器实体的计量单位"
                         },
                         "data_description": {
+                            "feedUnitType": "请注意，“杯”单位不支持传感器实体。",
                             "update_all_units": "默认情况下，在此更改单位只会更新该类型的传感器实体。"
                         }
                     }

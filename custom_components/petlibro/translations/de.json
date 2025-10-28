@@ -69,6 +69,7 @@
                             "update_all_units": "Maßeinheit aller Petlibro-Einheitssensor-Entitäten aktualisieren"
                         },
                         "data_description": {
+                            "feedUnitType": "Bitte beachten Sie, dass 'Tassen' für Sensor-Entitäten nicht unterstützt werden.",
                             "update_all_units": "Standardmäßig aktualisiert eine Änderung der Einheit hier nur Sensor-Entitäten dieses Typs."
                         }
                     }

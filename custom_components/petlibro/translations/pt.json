@@ -69,6 +69,7 @@
                             "update_all_units": "Atualizar a unidade de medida de todas as entidades de sensores de unidade Petlibro"
                         },
                         "data_description": {
+                            "feedUnitType": "Observe que 'xícaras' não são compatíveis com entidades de sensores.",
                             "update_all_units": "Por padrão, alterar uma unidade aqui atualiza apenas as entidades de sensores desse tipo."
                         }
                     }

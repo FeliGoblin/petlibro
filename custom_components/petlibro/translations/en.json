@@ -65,9 +65,10 @@
                             "feedUnitType": "Feeder/Feeding",
                             "waterUnitType": "Fountain/Drinking",
                             "weightUnitType": "Weight",
-                            "update_all_units": "Update measurement unit of all Petlibro unit sensor entities"
+                            "update_all_units": "Update measurement unit of all Petlibro unit sensors."
                         },
                         "data_description": {
+                            "feedUnitType": "Please note that 'cups' are not supported for sensor entities.",
                             "update_all_units": "By default, changing a unit here only updates sensor entities of that type."
                         }
                     }

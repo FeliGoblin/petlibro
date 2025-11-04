@@ -8,7 +8,6 @@ from ...exceptions import PetLibroAPIError
 from ..device import Device
 from datetime import datetime, timedelta, time
 from homeassistant.util import dt as dt_util
-from ...const import MAX_FEED_PORTIONS
 
 _LOGGER = getLogger(__name__)
 
@@ -16,8 +15,10 @@ class AirSmartFeeder(Device):  # Inherit directly from Device
     def __init__(self, *args, **kwargs):
         """Initialize the feeder with default values."""
         super().__init__(*args, **kwargs)
-        self.conversion_mode = "1/24"  # Static definition for AirSmartFeeder
         self._manual_feed_quantity = None  # Default to None initially
+        
+        self.feed_conv_factor = 0.5   # Air Smart Feeder uses #
+        self.max_feed_portions = 16   #  unique values here   #
 
     async def refresh(self):
         """Refresh the device data from the API."""
@@ -386,7 +387,7 @@ class AirSmartFeeder(Device):  # Inherit directly from Device
     async def set_manual_feed_quantity(self, value: float):
         """Set the manual feed quantity with a default value handling"""
         _LOGGER.debug(f"Setting manual feed quantity: serial={self.serial}, value={value}")
-        self.manual_feed_quantity = max(1, min(value, MAX_FEED_PORTIONS))  # Ensure value is within valid range
+        self.manual_feed_quantity = max(1, min(value, self.max_feed_portions))  # Ensure value is within valid range
 
     # Method for manual feeding
     async def set_manual_feed(self) -> None:

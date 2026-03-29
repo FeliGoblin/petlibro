@@ -546,7 +546,7 @@ PET_ENTITY_MAP: dict[PL_PetEntity, tuple[PL_PetEntityDescription]] = {
             key="age",
             name="Age",
             icon="mdi:cake-variant",
-            value_fn=lambda pet: pet.age.years,
+            value_fn=lambda pet: getattr(pet.age, "years", None),
             extra_state_attributes_fn=lambda pet: {
                 "years": pet.age.years,
                 "months": pet.age.months,
@@ -555,7 +555,7 @@ PET_ENTITY_MAP: dict[PL_PetEntity, tuple[PL_PetEntityDescription]] = {
                 if (bday := pet.birthday.replace(year=(today := date.today()).year))
                 >= today
                 else (bday.replace(year=today.year + 1) - today).days,
-            },
+            } if pet.age else None,
         ),
     ),
     PL_PetImageEntity: (
